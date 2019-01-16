@@ -1,0 +1,4 @@
+Index	SourceFilename	TimeStamp	Version	SHA1Sum	OriginalSize	FirstSlice	LastSlice	StartOffset	ChunkSuboffset	ChunkCompressedSize	Encrypted
+0	C:\Users\pderendinger\AppData\Roaming\Autodesk\Revit\Addins\2018\ENG_ClashDetection\Newtonsoft.Json.dll	2018-03-07 11:47:54.000		2fb0be100de03680fc4309c9fa5a29e69397a980	653824	1	1	0	0	194358	no
+1	C:\Users\pderendinger\AppData\Roaming\Autodesk\Revit\Addins\2018\ENG_ClashDetection\RVT_AutomateClash.dll	2018-03-08 15:47:16.000		623109df14f11a666f8d80c12de27f30ea005ecf	18944	1	1	0	653824	194358	no
+2	C:\Users\pderendinger\AppData\Roaming\Autodesk\Revit\Addins\2018\RVT_AutomateClash.addin	2018-03-07 11:37:18.000		9de582e2d2e94152ee44f4ee65f6c795e0e5ba94	470	1	1	0	672768	194358	no
