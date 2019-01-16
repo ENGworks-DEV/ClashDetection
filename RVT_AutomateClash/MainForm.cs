@@ -38,7 +38,7 @@ namespace RVT_AutomateClash
         {
             
             //Fill combo with linked documents
-            foreach (var item in MainFormTools.Documents(RevitTools.Doc,RevitTools.App))
+            foreach (var item in Clash.Documents(RevitTools.Doc,RevitTools.App))
             {
                 linkedModelsCombo.Items.Add(item.Key);
             }
@@ -79,7 +79,7 @@ namespace RVT_AutomateClash
             Settings settings = new Settings();
 
             var index = linkedModelsCombo.SelectedIndex;
-            var l = MainFormTools.Documents(RevitTools.Doc, RevitTools.App);
+            var l = Clash.Documents(RevitTools.Doc, RevitTools.App);
             // Get document from select index
             MainFormTools.linkedDocument = l.Values[index];
             MainFormTools.SelectedCategories = new List<ElementFilter>();
@@ -143,9 +143,7 @@ namespace RVT_AutomateClash
             {
                 writetext.Write(text);
             }
-            //string path = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\settings";
-            //string path = @"C:\\Temp\settings";
-            //File.WriteAllText(path, text);
+
 
         }
 

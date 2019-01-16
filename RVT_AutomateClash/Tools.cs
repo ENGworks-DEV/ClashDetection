@@ -1,5 +1,6 @@
 ﻿using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.DB;
+using Autodesk.Revit.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,17 +12,15 @@ namespace RVT_AutomateClash
     class Clash
 
     {
-
+        public static List<Element> elementsClashing { get; set; }
         public static SortedList<String, Document> Documents(Document doc, Application app)
         {
             SortedList<string, Document> output = new SortedList<string, Document>();
 
             foreach (Document d in app.Documents)
             {
-                if (d.IsLinked)
-                {
+
                     output.Add(d.Title, d);
-                }
             }
             return output;
         }
@@ -33,7 +32,7 @@ namespace RVT_AutomateClash
             var localElements = new List<Element>();
             var ClashingElements = new List<Element>();
             //If second document was not provided, use first doc
-            var SecondDocument = link == null ? doc: link;
+            var SecondDocument = MainFormTools.linkedDocument == null ? doc: MainFormTools.linkedDocument;
 
             //Get the transformation of the linked model from the project location
             var transform = GetTransform(doc, SecondDocument);
@@ -47,7 +46,7 @@ namespace RVT_AutomateClash
                 var VisibleLinkedElements = new List<GeometryElement>();
 
                 //Hard coded selection
-                LogicalOrFilter filterLinkedCategories = new LogicalOrFilter(SelectionB());
+                LogicalOrFilter filterLinkedCategories = new LogicalOrFilter(MainFormTools.SelectedCategories);
                 FilteredElementCollector walls = new FilteredElementCollector(SecondDocument).WherePasses(filterLinkedCategories).WhereElementIsNotElementType();
                 linkedElements = walls.ToElements() as List<Element>;
 
@@ -55,16 +54,24 @@ namespace RVT_AutomateClash
                 {
 
                     GeometryElement geom = item.get_Geometry(opt);
+                    GeometryElement geomTranslated = geom;
                     ////Get bounding box from transformed geometry
-                    var geomTranslated = geom.GetTransformed(transform);
-                    var bbox = geomTranslated.GetBoundingBox();
+                    //By default use element geoemtry to extract bbox
+                    var bbox = geom.GetBoundingBox();
+                    if (transform != null) {
+
+                    //If translation is valid, use it to override the bbox
+                     geomTranslated = geom.GetTransformed(transform);
+                     bbox = geomTranslated.GetBoundingBox();
+                    }
+
                     if (belongsToView(ActiveViewBB, bbox))
                     {
                         //VisibleLinkedElements.Add(geomTranslated);
                         Outline outline = new Outline(bbox.Min, bbox.Max);
                         BoundingBoxIntersectsFilter bbFilter = new BoundingBoxIntersectsFilter(outline);
 
-                        LogicalOrFilter logicalOrFilter = new LogicalOrFilter(SelectionA());
+                        LogicalOrFilter logicalOrFilter = new LogicalOrFilter(MainFormTools.SelectedHostCategories);
 
                         FilteredElementCollector bbClashingCollector = new FilteredElementCollector(doc, doc.ActiveView.Id).WherePasses(logicalOrFilter).WherePasses(bbFilter);
                         foreach (var element in bbClashingCollector.ToElements())
@@ -184,6 +191,49 @@ namespace RVT_AutomateClash
 
 
             return categories;
+        }
+    }
+
+    class RevitTools
+    {
+        public static Document Doc { get; set; }
+        public static Application App { get; set; }
+        public static UIDocument Uidoc { get; internal set; }
+
+        /// <summary>
+        /// Clear all overrides in view and just overrides selection to red
+        /// </summary>
+        /// <param name="L"></param>
+        /// <param name="doc"></param>
+        public static void OverrideInView(List<Element> L, Document doc)
+        {
+            var activeView = doc.ActiveView;
+
+            FilteredElementCollector coll = new FilteredElementCollector(doc, doc.ActiveView.Id).WhereElementIsViewIndependent().WhereElementIsNotElementType();
+            var output = coll.ToElementIds();
+            OverrideGraphicSettings clean = new OverrideGraphicSettings();
+            foreach (var element in output)
+            {
+                activeView.SetElementOverrides(element, clean);
+            }
+
+            OverrideGraphicSettings ogs = new OverrideGraphicSettings();
+            ogs.SetProjectionLineColor(new Color(255, 0, 0));
+            foreach (var e in L)
+            {
+                activeView.SetElementOverrides(e.Id, ogs);
+            }
+
+
+        }
+
+
+        public static void Focus(int id)
+        {
+            ElementId Id = new ElementId(id);
+            Element e = RevitTools.Doc.GetElement(Id);
+            RevitTools.Uidoc.ShowElements(e);
+
         }
     }
 }

@@ -19,12 +19,12 @@ namespace RVT_AutomateClash
             this.TopMost = true;
 
             InitializeComponent();
-           // MainForm.ActiveForm.Shown += this.Closes;
+   
         }
 
         private void ResultForm_Load(object sender, EventArgs e)
         {
-            foreach (var item in MainFormTools.elementsClashing)
+            foreach (var item in Clash.elementsClashing)
             {
                 listBox1.Items.Add(item.Id);
 
@@ -34,12 +34,6 @@ namespace RVT_AutomateClash
 
         }
 
-        
-        private void Closes(object sender, EventArgs e)
-        {
-            this.Close();
-
-        }
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             int id = Int32.Parse(listBox1.SelectedItem.ToString());
