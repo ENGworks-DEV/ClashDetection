@@ -150,6 +150,7 @@ namespace RevitClasher
 
         internal void FillResults()
         {
+            Clashes.Items.Clear();
             foreach (var item in Clash.elementsClashing)
             {
                 Clashes.Items.Add(item.Id);
