@@ -17,7 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace RVT_AutomateClash
+namespace RevitClasher
 {
     /// <summary>
     /// Interaction logic for MainUserControl.xaml
@@ -60,13 +60,13 @@ namespace RVT_AutomateClash
             }
 
             //Presetting everything from a previous run
-            foreach (var item in RVT_AutomateClash.Properties.Settings.Default.SelectionB)
+            foreach (var item in RevitClasher.Properties.Settings.Default.SelectionB)
             {
                 int i = int.Parse(item);
                 CheckBox chbox = SelectionBList.Items[i] as CheckBox;
                 chbox.IsChecked = true;
             }
-            foreach (var item in RVT_AutomateClash.Properties.Settings.Default.SelectionA)
+            foreach (var item in RevitClasher.Properties.Settings.Default.SelectionA)
             {
                 int i = int.Parse(item);
                 CheckBox chbox = SelectionAList.Items[i] as CheckBox;

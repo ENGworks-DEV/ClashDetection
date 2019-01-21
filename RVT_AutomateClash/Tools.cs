@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RVT_AutomateClash
+namespace RevitClasher
 {
     class Clash
 

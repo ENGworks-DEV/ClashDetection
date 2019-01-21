@@ -11,7 +11,7 @@ using Autodesk.Revit.UI;
 using System.Resources;
 #endregion
 
-namespace RVT_AutomateClash
+namespace RevitClasher
 {
     class App : IExternalApplication
     {

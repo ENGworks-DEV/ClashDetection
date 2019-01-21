@@ -10,7 +10,7 @@ using Autodesk.Revit.ApplicationServices;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace RVT_AutomateClash
+namespace RevitClasher
 {
     [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
     public class Main : IExternalCommand

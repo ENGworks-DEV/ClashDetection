@@ -7,8 +7,8 @@
     <ProjectGuid>{0614BF9F-6BCD-476B-B0A3-180D556F7530}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RVT_AutomateClash</RootNamespace>
-    <AssemblyName>RVT_AutomateClash</AssemblyName>
+    <RootNamespace>RevitClasher</RootNamespace>
+    <AssemblyName>RevitClasher</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

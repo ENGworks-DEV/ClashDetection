@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace RVT_AutomateClash.Properties {
+namespace RevitClasher.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
