@@ -1,0 +1,44 @@
+﻿<Window x:Class="RVT_AutomateClash.MainUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:sw="clr-namespace:WpfStyleableWindow.StyleableWindow"  
+             xmlns:local="clr-namespace:RVT_AutomateClash"
+             mc:Ignorable="d" 
+             d:DesignHeight="350" d:DesignWidth="400" MinHeight="550" MinWidth="400" MaxHeight="550" MaxWidth="400"
+                Background="White" 
+        Foreground="Black" 
+        ResizeMode="NoResize" 
+        Title="ClashDetection"
+        WindowStartupLocation="CenterScreen"
+        Style="{DynamicResource CustomWindowStyle}" WindowStyle="None"
+        >
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/Resources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid>
+
+        <ListBox  Name="SelectionAList" HorizontalAlignment="Left" Height="200" Margin="10,81,0,0" VerticalAlignment="Top" Width="180">
+
+        </ListBox>
+        <ListBox  Name="SelectionBList" HorizontalAlignment="Left" Height="200" Margin="208,81,0,0" VerticalAlignment="Top" Width="180">
+
+        </ListBox>
+        <ComboBox Name="ListOfLinks" HorizontalAlignment="Left" Height="20" Margin="10,27,0,0" VerticalAlignment="Top" Width="380"/>
+        <Button Name="SaveConfig" Content="Save Configuration" HorizontalAlignment="Left" Height="24" Margin="10,294,0,0" VerticalAlignment="Top" Width="115" Click="SaveConfig_Click"/>
+        <Button x:Name="Run" Content="Execute" HorizontalAlignment="Left" Height="24" Margin="273,294,0,0" VerticalAlignment="Top" Width="115" Click="Run_Click"/>
+        <ListBox  Name="Clashes" HorizontalAlignment="Left" Height="162" Margin="10,346,0,0" SelectionChanged="OnSelected" VerticalAlignment="Top" Width="378">
+
+        </ListBox>
+        <Label Content="Clash Results - Click to select and zoom" HorizontalAlignment="Left" Height="24" Margin="10,321,0,0" VerticalAlignment="Top" Width="358"/>
+        <Label Content="Available models " HorizontalAlignment="Left" Height="24" Margin="10,1,0,0" VerticalAlignment="Top" Width="180"/>
+        <Label Content="Selection A - Local Selection " HorizontalAlignment="Left" Height="24" Margin="10,57,0,0" VerticalAlignment="Top" Width="180"/>
+        <Label Content="Selection B" HorizontalAlignment="Left" Height="24" Margin="208,56,0,0" VerticalAlignment="Top" Width="180"/>
+    </Grid>
+</Window>

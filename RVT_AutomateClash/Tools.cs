@@ -2,6 +2,7 @@
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,19 @@ namespace RVT_AutomateClash
     class Clash
 
     {
+         public static void Execute ()
+        {
+            Clash.elementsClashing = Clash.clashingElements(RevitTools.Doc, RevitTools.App);
+
+            using (Transaction t = new Transaction(RevitTools.Doc, "Clash"))
+            {
+                t.Start();
+                TaskDialog.Show("ll", Clash.elementsClashing.Count().ToString());
+                RevitTools.OverrideInView(Clash.elementsClashing, RevitTools.Doc);
+
+                t.Commit();
+            }
+}
         public static List<Element> elementsClashing { get; set; }
         public static SortedList<String, Document> Documents(Document doc, Application app)
         {
@@ -32,7 +46,7 @@ namespace RVT_AutomateClash
             var localElements = new List<Element>();
             var ClashingElements = new List<Element>();
             //If second document was not provided, use first doc
-            var SecondDocument = MainFormTools.linkedDocument == null ? doc: MainFormTools.linkedDocument;
+            var SecondDocument = FormTools.linkedDocument == null ? doc: FormTools.linkedDocument;
 
             //Get the transformation of the linked model from the project location
             var transform = GetTransform(doc, SecondDocument);
@@ -46,7 +60,7 @@ namespace RVT_AutomateClash
                 var VisibleLinkedElements = new List<GeometryElement>();
 
                 //Hard coded selection
-                LogicalOrFilter filterLinkedCategories = new LogicalOrFilter(MainFormTools.SelectedCategories);
+                LogicalOrFilter filterLinkedCategories = new LogicalOrFilter(FormTools.SelectedCategories);
                 FilteredElementCollector walls = new FilteredElementCollector(SecondDocument).WherePasses(filterLinkedCategories).WhereElementIsNotElementType();
                 linkedElements = walls.ToElements() as List<Element>;
 
@@ -71,7 +85,7 @@ namespace RVT_AutomateClash
                         Outline outline = new Outline(bbox.Min, bbox.Max);
                         BoundingBoxIntersectsFilter bbFilter = new BoundingBoxIntersectsFilter(outline);
 
-                        LogicalOrFilter logicalOrFilter = new LogicalOrFilter(MainFormTools.SelectedHostCategories);
+                        LogicalOrFilter logicalOrFilter = new LogicalOrFilter(FormTools.SelectedHostCategories);
 
                         FilteredElementCollector bbClashingCollector = new FilteredElementCollector(doc, doc.ActiveView.Id).WherePasses(logicalOrFilter).WherePasses(bbFilter);
                         foreach (var element in bbClashingCollector.ToElements())
@@ -89,7 +103,12 @@ namespace RVT_AutomateClash
             return ClashingElements;
         }
 
-
+        /// <summary>
+        /// Returns transform difference between documents
+        /// </summary>
+        /// <param name="doc"></param>
+        /// <param name="linked"></param>
+        /// <returns></returns>
         public static Transform GetTransform(Document doc, Document linked)
         {
 
@@ -232,6 +251,7 @@ namespace RVT_AutomateClash
         {
             ElementId Id = new ElementId(id);
             Element e = RevitTools.Doc.GetElement(Id);
+            RevitTools.Uidoc.Selection.SetElementIds(new List<ElementId>() { e.Id });
             RevitTools.Uidoc.ShowElements(e);
 
         }

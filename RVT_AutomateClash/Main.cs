@@ -43,39 +43,18 @@ namespace RVT_AutomateClash
 
             //Debug
             var link = Clash.Documents(doc, app);
-            using (MainForm thisform = new MainForm())
-            {
+            MainUserControl control = new MainUserControl();
+            control.ShowDialog();
 
-                thisform.ShowDialog();
-                if (thisform.DialogResult == System.Windows.Forms.DialogResult.OK)
-                {
-                    Clash.elementsClashing = Clash.clashingElements(doc, app);
-
-                    using (Transaction t = new Transaction(doc, "Clash"))
-                    {
-                        t.Start();
-                        TaskDialog.Show("ll", Clash.elementsClashing.Count().ToString());
-                        RevitTools.OverrideInView(Clash.elementsClashing, doc);
-
-                        t.Commit();
-
-                    }
-
-                }
-            }
-
-            ResultForm result = new ResultForm();
-
-                result.Show();
-
-                return Result.Succeeded;
+            return Result.Succeeded;
         }
 
     }
 
-    public class MainFormTools
+    public class FormTools
 
     {
+       
 
         public static Document linkedDocument { get; set; }
 
