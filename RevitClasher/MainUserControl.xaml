@@ -37,7 +37,7 @@
 
         </ListBox>
         <Label Content="Clash Results - Click to select and zoom" HorizontalAlignment="Left" Height="24" Margin="10,321,0,0" VerticalAlignment="Top" Width="358"/>
-        <Label Content="Available models " HorizontalAlignment="Left" Height="24" Margin="10,1,0,0" VerticalAlignment="Top" Width="180"/>
+        <Label Content="Available models for Selection B " HorizontalAlignment="Left" Height="24" Margin="10,1,0,0" VerticalAlignment="Top" Width="180"/>
         <Label Content="Selection A - Local Selection " HorizontalAlignment="Left" Height="24" Margin="10,57,0,0" VerticalAlignment="Top" Width="180"/>
         <Label Content="Selection B" HorizontalAlignment="Left" Height="24" Margin="208,56,0,0" VerticalAlignment="Top" Width="180"/>
     </Grid>

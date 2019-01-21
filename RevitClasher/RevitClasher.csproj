@@ -117,10 +117,7 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="RVT_AutomateClash.addin">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="RevitClasher.addin" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="MainUserControl.xaml">
@@ -137,17 +134,20 @@
     <Resource Include="Resources\Icon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <Content Include="Resources\LogoAndName-01.jpg" />
-    <Content Include="Resources\RenumberPartsLogo.png" />
+    <EmbeddedResource Include="Resources\RevitClasherLogo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
     <Content Include="Resources\WarningLogo.png" />
-    <Content Include="Resources\winforms.html" />
+    <EmbeddedResource Include="Resources\winforms.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>IF EXIST "%25APPDATA%25\Autodesk\Revit\Addins\2018\ENG_ClashDetection" rmdir /S /Q "%25APPDATA%25\Autodesk\Revit\Addins\2018\ENG_ClashDetection"
-mkdir "%25APPDATA%25\Autodesk\Revit\Addins\2018\ENG_ClashDetection"
-
-xcopy /Y "$(TargetFileName)" "%25APPDATA%25\Autodesk\Revit\Addins\2018\ENG_ClashDetection\"
-xcopy /Y "$(TargetDir)RVT_AutomateClash.addin" "%25APPDATA%25\Autodesk\Revit\Addins\2018\"</PostBuildEvent>
+    <PostBuildEvent>IF EXIST "%25APPDATA%25\Autodesk\Revit\Addins\2018\RevitClasher" rmdir /S /Q "%25APPDATA%25\Autodesk\Revit\Addins\2018\RevitClasher"
+mkdir "%25APPDATA%25\Autodesk\Revit\Addins\2018\RevitClasher"
+xcopy /Y "$(TargetFileName)" "%25APPDATA%25\Autodesk\Revit\Addins\2018\RevitClasher\"
+xcopy /Y "$(TargetDir)\Resources" "%25APPDATA%25\Autodesk\Revit\Addins\2018\RevitClasher\Resources\"
+xcopy /Y "$(ProjectDir)RevitClasher.addin" "%25APPDATA%25\Autodesk\Revit\Addins\2018\"</PostBuildEvent>
   </PropertyGroup>
 </Project>

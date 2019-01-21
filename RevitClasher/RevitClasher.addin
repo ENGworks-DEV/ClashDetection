@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+
+  <AddIn Type="Application">
+    <Name>RevitClasher</Name>
+    <Assembly>RevitClasher\RevitClasher.dll</Assembly>
+    <FullClassName>RevitClasher.App</FullClassName>
+    <ClientId>64E3DE6F-4F9F-4942-9EAC-02B2D54F6222</ClientId>
+    <VendorId>ENG</VendorId>
+    <VendorDescription>ENGworks, http://www.engworks.com</VendorDescription>
+  </AddIn>
+</RevitAddIns>

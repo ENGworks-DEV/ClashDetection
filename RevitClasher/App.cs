@@ -25,15 +25,15 @@ namespace RevitClasher
 
             // Create a ribbon panel
             RibbonPanel m_projectPanel = application.CreateRibbonPanel(
-                "AutomateClash");
+                "RevitClasher");
             
             //Button
             PushButton pushButton = m_projectPanel.AddItem(new PushButtonData(
-                "AutomateClash", "AutomateClash", ExecutingAssemblyPath,
-                "RVT_AutomateClash.Main")) as PushButton;
+                "RevitClasher", "Revit Clasher", ExecutingAssemblyPath,
+                "RevitClasher.Main")) as PushButton;
 
             //Add Help ToolTip 
-            pushButton.ToolTip = "AutomateClash";
+            pushButton.ToolTip = "RevitClasher";
 
             //Add long description 
             pushButton.LongDescription =
@@ -41,7 +41,7 @@ namespace RevitClasher
 
             // Set the large image shown on button.
             pushButton.LargeImage = PngImageSource(
-                "RenumberParts.Resources.RenumberPartsLogo.png");
+                "RevitClasher.Resources.RevitClasherLogo.png");
 
             // Get the location of the solution DLL
             string path = System.IO.Path.GetDirectoryName(
