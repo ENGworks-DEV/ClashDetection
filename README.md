@@ -1,4 +1,4 @@
-![](https://github.com/ENGworks-DEV/RenumberParts/blob/master/RenumberParts/Resources/LogoAndName-01.jpg)
+![](https://github.com/ENGworks-DEV/ClashDetection/blob/master/RevitClasher/Resources/LogoAndName.jpg)
 
 This is a Revit add-in that helps you to find all the clashes within Revit
 
