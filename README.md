@@ -20,7 +20,7 @@ You can find this addin inside Autodesk app store
 
 ## Contribute ##
 
-RenumberParts is an open-source project. You can make suggestions or track and submit bugs via Github issues.  You can submit your own code to the RenumberParts project via a Github pull request.
+Clash Detection is an open-source project. You can make suggestions or track and submit bugs via Github issues.  You can submit your own code to the RenumberParts project via a Github pull request.
 
 ## About ##
 
