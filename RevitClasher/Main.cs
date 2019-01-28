@@ -45,8 +45,8 @@ namespace RevitClasher
             var link = Clash.Documents(doc, app);
             MainUserControl control = new MainUserControl();
             control.ShowDialog();
-            ResultsWindow result = new ResultsWindow();
-            result.Show();
+      
+ 
             return Result.Succeeded;
         }
 
