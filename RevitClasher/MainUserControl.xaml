@@ -31,7 +31,7 @@
 
         </ListBox>
         <ComboBox Name="ListOfLinks" HorizontalAlignment="Left" Height="20" Margin="10,27,0,0" VerticalAlignment="Top" Width="380"/>
-        <Button Name="SaveConfig" Content="Save Configuration" HorizontalAlignment="Left" Height="24" Margin="10,294,0,0" VerticalAlignment="Top" Width="115" Click="SaveConfig_Click"/>
+        
         <Button x:Name="Run" Content="Execute" HorizontalAlignment="Left" Height="24" Margin="273,294,0,0" VerticalAlignment="Top" Width="115" Click="Run_Click"/>
         <ListBox  Name="Clashes" HorizontalAlignment="Left" Height="162" Margin="10,346,0,0" SelectionChanged="OnSelected" VerticalAlignment="Top" Width="378">
 
