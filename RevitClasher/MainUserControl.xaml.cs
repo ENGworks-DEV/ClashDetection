@@ -145,23 +145,10 @@ namespace RevitClasher
 
             }
             Clash.Execute();
-            FillResults();
+            this.Close();
         }
 
-        internal void FillResults()
-        {
-            foreach (var item in Clash.elementsClashing)
-            {
-                Clashes.Items.Add(item.Id);
 
-            }
-        }
-
-        private void OnSelected(object sender, RoutedEventArgs e)
-        {
-            int id = Int32.Parse(Clashes.SelectedItem.ToString());
-            RevitTools.Focus(id);
-        }
 
     }
 

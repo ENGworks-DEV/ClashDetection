@@ -111,6 +111,7 @@
     <Compile Include="Resources\Resources.xaml.cs">
       <DependentUpon>Resources.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ResultsWindow.cs" />
     <Compile Include="StyleableWindow\ControlDoubleClickBehavior.cs" />
     <Compile Include="StyleableWindow\ShowSystemMenuBehavior.cs" />
     <Compile Include="StyleableWindow\SystemMenuManager.cs" />
@@ -136,7 +137,9 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="RevitClasher.addin" />
+    <None Include="RevitClasher.addin">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Page Include="MainUserControl.xaml">
@@ -146,6 +149,10 @@
     <Page Include="Resources\Resources.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ResultsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

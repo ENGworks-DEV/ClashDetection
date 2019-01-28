@@ -20,7 +20,6 @@ namespace RevitClasher
             using (Transaction t = new Transaction(RevitTools.Doc, "Clash"))
             {
                 t.Start();
-                TaskDialog.Show("ll", Clash.elementsClashing.Count().ToString());
                 RevitTools.OverrideInView(Clash.elementsClashing, RevitTools.Doc);
 
                 t.Commit();
