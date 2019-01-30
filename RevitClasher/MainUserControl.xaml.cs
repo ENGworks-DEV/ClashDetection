@@ -109,11 +109,19 @@ namespace RevitClasher
             Properties.Settings.Default.SelectionB = selectionB;
         }
 
-        private void Run_Click(object sender, RoutedEventArgs e)
+
+        private void Reset_Click(object sender, RoutedEventArgs e)
+        {
+            RevitTools.resetView();
+
+        }
+
+
+            private void Run_Click(object sender, RoutedEventArgs e)
         {
             //Save Selection
             SaveConfiguration();
-
+            RevitTools.resetView();
             var index = Properties.Settings.Default.ListOfLinks;
             var l = Clash.Documents(RevitTools.Doc, RevitTools.App);
             // Get document from select index
@@ -145,6 +153,8 @@ namespace RevitClasher
 
             }
             Clash.Execute();
+            ResultsWindow result = new ResultsWindow();
+            result.Show();
             this.Close();
         }
 

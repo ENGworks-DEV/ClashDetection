@@ -30,9 +30,9 @@
 
         </ListBox>
         <ComboBox Name="ListOfLinks" HorizontalAlignment="Left" Height="20" Margin="208,29,0,0" VerticalAlignment="Top" Width="180"/>
-        <Button Name="SaveConfig" Content="Save Configuration" HorizontalAlignment="Left" Height="24" Margin="10,334,0,0" VerticalAlignment="Top" Width="115" Click="SaveConfig_Click"/>
         <Button x:Name="Run" Content="Execute" HorizontalAlignment="Left" Height="24" Margin="273,334,0,0" VerticalAlignment="Top" Width="115" Click="Run_Click"/>
         <Label Content="Available models for Selection B " HorizontalAlignment="Left" Height="24" Margin="208,0,0,0" VerticalAlignment="Top" Width="180"/>
         <Label Content="Selection A - Local Selection " HorizontalAlignment="Left" Height="24" Margin="10,0,0,0" VerticalAlignment="Top" Width="180"/>
+        <Button x:Name="Run_Copy" Content="Reset Color" HorizontalAlignment="Left" Height="24" Margin="10,334,0,0" VerticalAlignment="Top" Width="115" Click="Reset_Click"/>
     </Grid>
 </Window>

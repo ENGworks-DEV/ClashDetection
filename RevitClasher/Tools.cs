@@ -254,5 +254,29 @@ namespace RevitClasher
             RevitTools.Uidoc.ShowElements(e);
 
         }
+
+        //TODO Reset Color
+        public static void resetView()
+        {
+          
+            using (Transaction ResetView = new Transaction(Doc, "Reset view"))
+            {
+                ResetView.Start();
+                OverrideGraphicSettings overrideGraphicSettings = new OverrideGraphicSettings();
+
+                var collector = new FilteredElementCollector(Doc, Doc.ActiveView.Id).WhereElementIsNotElementType();
+
+                foreach (var item in collector.ToElements())
+                {
+                    if (item.IsValidObject && Doc.GetElement(item.Id) != null)
+                    {
+                        Doc.ActiveView.SetElementOverrides(item.Id, overrideGraphicSettings);
+                    }
+
+                }
+
+                ResetView.Commit();
+            }
+        }
     }
 }
