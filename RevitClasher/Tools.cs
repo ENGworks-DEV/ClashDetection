@@ -4,29 +4,29 @@ using Autodesk.Revit.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace RevitClasher
 {
     class Clash
 
     {
-         public static void Execute ()
+         public static void Execute ( Document doc)
         {
-            Clash.elementsClashing = Clash.clashingElements(RevitTools.Doc, RevitTools.App);
-
-            using (Transaction t = new Transaction(RevitTools.Doc, "Clash"))
+            var clashing =new  ObservableCollection<Element>( Clash.clashingElements(RevitTools.Doc, RevitTools.App));
+            foreach (var item in clashing)
             {
-                t.Start();
-                TaskDialog.Show("ll", Clash.elementsClashing.Count().ToString());
-                RevitTools.OverrideInView(Clash.elementsClashing, RevitTools.Doc);
-
-                t.Commit();
+                MainUserControl.elementsClashing.Add(new RevitElement() { element = item });
             }
-}
-        public static List<Element> elementsClashing { get; set; }
+
+            RevitTools.OverrideInView(MainUserControl.elementsClashing.Select(x => x.element).ToList(), RevitTools.Doc);
+
+        }
+        
         public static SortedList<String, Document> Documents(Document doc, Application app)
         {
             SortedList<string, Document> output = new SortedList<string, Document>();

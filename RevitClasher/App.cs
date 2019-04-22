@@ -62,6 +62,9 @@ namespace RevitClasher
             // Assign contextual help to pushbutton
             pushButton.SetContextualHelp(contextHelp);
 
+            m_MyForm = null;   // no dialog needed yet; the command will bring it
+            thisApp = this;  // static access to this application instance
+
             return Result.Succeeded;
 
         }
@@ -77,7 +80,37 @@ namespace RevitClasher
 
         public Result OnShutdown(UIControlledApplication a)
         {
+            if (m_MyForm != null && m_MyForm.Visibility.Equals(Visibility.Visible))
+            {
+                m_MyForm.Close();
+            }
+
+         
             return Result.Succeeded;
         }
+
+        // class instance
+        public static App thisApp = null;
+
+        private MainUserControl m_MyForm;
+        //   The external command invokes this on the end-user's request
+        public void ShowForm()
+        {
+            // If we do not have a dialog yet, create and show it
+            if (m_MyForm == null)
+            {
+                // A new handler to handle request posting by the dialog
+                ExternalEventClashDetection handler = new ExternalEventClashDetection();
+
+                // External Event for the dialog to use (to post requests)
+                ExternalEvent exEvent = ExternalEvent.Create(handler);
+
+                // We give the objects to the new dialog;
+                // The dialog becomes the owner responsible for disposing them, eventually.
+                m_MyForm = new MainUserControl(exEvent, handler);
+                m_MyForm.Show();
+            }
+        }
+
     }
 }

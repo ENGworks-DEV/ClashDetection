@@ -17,7 +17,7 @@ namespace RevitClasher
     {
         static AddInId appId = new AddInId(new Guid("64E3DE6F-4F9F-4942-9EAC-02B2D54F6222"));
 
-        public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
+        public virtual Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             UIApplication uiapp = commandData.Application;
             UIDocument uidoc = uiapp.ActiveUIDocument;
@@ -43,12 +43,21 @@ namespace RevitClasher
 
             //Debug
             var link = Clash.Documents(doc, app);
-            MainUserControl control = new MainUserControl();
-            control.ShowDialog();
+            try
+            {
+                App.thisApp.ShowForm();
+                return Result.Succeeded;
+            }
+            catch (Exception ex)
+            {
+                message = ex.Message;
+                return Result.Failed;
+            }
 
-            return Result.Succeeded;
+            
+
         }
-
+       
     }
 
     public class FormTools
