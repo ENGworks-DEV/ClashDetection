@@ -32,7 +32,9 @@ namespace RevitClasher
         private ExternalEventClashDetection m_Handler;
         public static bool _wasExecuted;
         public static MainUserControl thisForm;
-        public static ObservableCollection<RevitElement> elementsClashing{ get; set; }
+        public static ObservableCollection<RevitElement> elementsClashingB { get; set; }
+
+        public static ObservableCollection<RevitElement> elementsClashingA{ get; set; }
        
 
 
@@ -45,14 +47,23 @@ namespace RevitClasher
 
             this.DataContext = this;
 
-            elementsClashing = new ObservableCollection<RevitElement>();
+            elementsClashingA = new ObservableCollection<RevitElement>();
             
-            elementsClashing.CollectionChanged += update;
+            elementsClashingA.CollectionChanged += updateA;
+
+            elementsClashingB = new ObservableCollection<RevitElement>();
+
+            elementsClashingB.CollectionChanged += updateB;
         }
 
-        private void update(object sender, NotifyCollectionChangedEventArgs e)
+        private void updateA(object sender, NotifyCollectionChangedEventArgs e)
         {
-            Clashes.Items.Add(MainUserControl.elementsClashing.Last());
+            ClashesA.Items.Add(MainUserControl.elementsClashingA.Last());
+           
+        }
+        private void updateB(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            ClashesB.Items.Add(MainUserControl.elementsClashingB.Last());
 
         }
 
@@ -135,7 +146,8 @@ namespace RevitClasher
 
         private void Run_Click(object sender, RoutedEventArgs e)
         {
-            this.Clashes.Items.Clear();
+            this.ClashesA.Items.Clear();
+            this.ClashesB.Items.Clear();
             //Save Selection
             SaveConfiguration();
             _wasExecuted = false;
@@ -177,12 +189,12 @@ namespace RevitClasher
 
 
 
-        private void OnSelected(object sender, RoutedEventArgs e)
+        private void OnSelectedA(object sender, RoutedEventArgs e)
         {
             try { 
-            if (Clashes.SelectedItem != null)
+            if (ClashesA.SelectedItem != null)
             {
-                var vRVTElement = (RevitElement)Clashes.SelectedItem;
+                var vRVTElement = (RevitElement)ClashesA.SelectedItem;
 
                 RevitTools.Focus(vRVTElement.element.Id.IntegerValue);
             }
@@ -193,6 +205,23 @@ namespace RevitClasher
             }
         }
 
+
+        private void OnSelectedB(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (ClashesB.SelectedItem != null)
+                {
+                    var vRVTElement = (RevitElement)ClashesB.SelectedItem;
+
+                    RevitTools.Focus(vRVTElement.element.Id.IntegerValue);
+                }
+            }
+            catch
+            {
+
+            }
+        }
     }
 
 }
