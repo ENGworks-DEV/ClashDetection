@@ -1,7 +1,9 @@
 ﻿using Autodesk.Revit.DB;
+using Autodesk.Revit.UI;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
@@ -16,6 +18,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace RevitClasher
 {
@@ -24,11 +27,35 @@ namespace RevitClasher
     /// </summary>
     public partial class MainUserControl : Window
     {
-        public MainUserControl()
+
+        private ExternalEvent m_ExEvent;
+        private ExternalEventClashDetection m_Handler;
+        public static bool _wasExecuted;
+        public static MainUserControl thisForm;
+        public static ObservableCollection<RevitElement> elementsClashing{ get; set; }
+       
+
+
+        public MainUserControl(ExternalEvent exEvent, ExternalEventClashDetection handler)
         {
             InitializeComponent();
+            m_ExEvent = exEvent;
+            m_Handler = handler;
             FillForm();
+
+            this.DataContext = this;
+
+            elementsClashing = new ObservableCollection<RevitElement>();
+            
+            elementsClashing.CollectionChanged += update;
         }
+
+        private void update(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            Clashes.Items.Add(MainUserControl.elementsClashing.Last());
+
+        }
+
         public void FillForm()
         {
 
@@ -109,19 +136,12 @@ namespace RevitClasher
             Properties.Settings.Default.SelectionB = selectionB;
         }
 
-
-        private void Reset_Click(object sender, RoutedEventArgs e)
+        private void Run_Click(object sender, RoutedEventArgs e)
         {
-            RevitTools.resetView();
-
-        }
-
-
-            private void Run_Click(object sender, RoutedEventArgs e)
-        {
+            this.Clashes.Items.Clear();
             //Save Selection
             SaveConfiguration();
-            RevitTools.resetView();
+            _wasExecuted = false;
             var index = Properties.Settings.Default.ListOfLinks;
             var l = Clash.Documents(RevitTools.Doc, RevitTools.App);
             // Get document from select index
@@ -152,13 +172,29 @@ namespace RevitClasher
                 
 
             }
-            Clash.Execute();
-            ResultsWindow result = new ResultsWindow();
-            result.Show();
-            this.Close();
+            m_ExEvent.Raise();
+
+
+    
         }
 
 
+
+        private void OnSelected(object sender, RoutedEventArgs e)
+        {
+            try { 
+            if (Clashes.SelectedItem != null)
+            {
+                var vRVTElement = (RevitElement)Clashes.SelectedItem;
+
+                RevitTools.Focus(vRVTElement.element.Id.IntegerValue);
+            }
+            }
+            catch
+            {
+
+            }
+        }
 
     }
 

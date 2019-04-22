@@ -4,28 +4,29 @@ using Autodesk.Revit.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace RevitClasher
 {
     class Clash
 
     {
-         public static void Execute ()
+         public static void Execute ( Document doc)
         {
-            Clash.elementsClashing = Clash.clashingElements(RevitTools.Doc, RevitTools.App);
-
-            using (Transaction t = new Transaction(RevitTools.Doc, "Clash"))
+            var clashing =new  ObservableCollection<Element>( Clash.clashingElements(RevitTools.Doc, RevitTools.App));
+            foreach (var item in clashing)
             {
-                t.Start();
-                RevitTools.OverrideInView(Clash.elementsClashing, RevitTools.Doc);
-
-                t.Commit();
+                MainUserControl.elementsClashing.Add(new RevitElement() { element = item });
             }
-}
-        public static List<Element> elementsClashing { get; set; }
+
+            RevitTools.OverrideInView(MainUserControl.elementsClashing.Select(x => x.element).ToList(), RevitTools.Doc);
+
+        }
+        
         public static SortedList<String, Document> Documents(Document doc, Application app)
         {
             SortedList<string, Document> output = new SortedList<string, Document>();
@@ -253,30 +254,6 @@ namespace RevitClasher
             RevitTools.Uidoc.Selection.SetElementIds(new List<ElementId>() { e.Id });
             RevitTools.Uidoc.ShowElements(e);
 
-        }
-
-        //TODO Reset Color
-        public static void resetView()
-        {
-          
-            using (Transaction ResetView = new Transaction(Doc, "Reset view"))
-            {
-                ResetView.Start();
-                OverrideGraphicSettings overrideGraphicSettings = new OverrideGraphicSettings();
-
-                var collector = new FilteredElementCollector(Doc, Doc.ActiveView.Id).WhereElementIsNotElementType();
-
-                foreach (var item in collector.ToElements())
-                {
-                    if (item.IsValidObject && Doc.GetElement(item.Id) != null)
-                    {
-                        Doc.ActiveView.SetElementOverrides(item.Id, overrideGraphicSettings);
-                    }
-
-                }
-
-                ResetView.Commit();
-            }
         }
     }
 }
