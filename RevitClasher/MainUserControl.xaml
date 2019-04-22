@@ -5,14 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         xmlns:sw="clr-namespace:WpfStyleableWindow.StyleableWindow"  
              xmlns:local="clr-namespace:RevitClasher"
-             mc:Ignorable="d" 
-             d:DesignHeight="350" d:DesignWidth="400" MinHeight="550" MinWidth="400" MaxHeight="550" MaxWidth="400"
+             mc:Ignorable="d" d:DesignWidth="400" MinHeight="750" MinWidth="400" MaxHeight="750" MaxWidth="400"
                 Background="White" 
         Foreground="Black" 
         ResizeMode="NoResize" 
         Title="ClashDetection"
         WindowStartupLocation="CenterScreen"
-        Style="{DynamicResource CustomWindowStyle}" WindowStyle="None"
+        Style="{DynamicResource CustomWindowStyle}" WindowStyle="None" Height="732.074"
         >
     <Window.Resources>
         <ResourceDictionary>
@@ -32,12 +31,14 @@
         </ListBox>
         <ComboBox Name="ListOfLinks" HorizontalAlignment="Left" Height="20" Margin="10,27,0,0" VerticalAlignment="Top" Width="380"/>
         <Button x:Name="Run" Content="Execute" HorizontalAlignment="Left" Height="24" Margin="273,294,0,0" VerticalAlignment="Top" Width="115" Click="Run_Click"/>
-        <ListBox  Name="Clashes"  HorizontalAlignment="Left" DisplayMemberPath="Name" DataContext="{Binding elementsClashing}" Height="162" Margin="10,346,0,0" SelectionChanged="OnSelected" VerticalAlignment="Top" Width="378">
+        <ListBox  Name="ClashesA"  HorizontalAlignment="Left" DisplayMemberPath="Name" DataContext="{Binding elementsClashingA}" Height="162" Margin="10,360,0,0" SelectionChanged="OnSelectedA" VerticalAlignment="Top" Width="378">
         </ListBox>
-       
-        <Label Content="Clash Results - Click to select and zoom" HorizontalAlignment="Left" Height="24" Margin="10,321,0,0" VerticalAlignment="Top" Width="358"/>
+
+        <Label Content="Selection A  - Clash Results - Click to select and zoom" HorizontalAlignment="Left" Height="24" Margin="10,331,0,0" VerticalAlignment="Top" Width="358"/>
         <Label Content="Available models for Selection B " HorizontalAlignment="Left" Height="24" Margin="10,1,0,0" VerticalAlignment="Top" Width="180"/>
         <Label Content="Selection A - Local Selection " HorizontalAlignment="Left" Height="24" Margin="10,57,0,0" VerticalAlignment="Top" Width="180"/>
         <Label Content="Selection B" HorizontalAlignment="Left" Height="24" Margin="208,56,0,0" VerticalAlignment="Top" Width="180"/>
+        <ListBox  x:Name="ClashesB"  HorizontalAlignment="Left" DisplayMemberPath="Name" DataContext="{Binding elementsClashingB}" Height="162" Margin="10,546,0,0" SelectionChanged="OnSelectedB" VerticalAlignment="Top" Width="378"/>
+        <Label Content="Selection B - Clash Results - Click to select and zoom" HorizontalAlignment="Left" Height="24" Margin="10,522,0,0" VerticalAlignment="Top" Width="358"/>
     </Grid>
 </Window>

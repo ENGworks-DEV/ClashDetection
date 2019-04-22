@@ -17,13 +17,18 @@ namespace RevitClasher
     {
          public static void Execute ( Document doc)
         {
-            var clashing =new  ObservableCollection<Element>( Clash.clashingElements(RevitTools.Doc, RevitTools.App));
-            foreach (var item in clashing)
+            var clashing = Clash.clashingElements(RevitTools.Doc, RevitTools.App);
+            foreach (var item in clashing.Item1)
             {
-                MainUserControl.elementsClashing.Add(new RevitElement() { element = item });
+                MainUserControl.elementsClashingA.Add(new RevitElement() { element = item });
             }
 
-            RevitTools.OverrideInView(MainUserControl.elementsClashing.Select(x => x.element).ToList(), RevitTools.Doc);
+            foreach (var item in clashing.Item2)
+            {
+                MainUserControl.elementsClashingB.Add(new RevitElement() { element = item });
+            }
+
+            RevitTools.OverrideInView(clashing, RevitTools.Doc);
 
         }
         
@@ -38,13 +43,15 @@ namespace RevitClasher
             }
             return output;
         }
-        public static List<Element> clashingElements(Document doc, Application app, Document link = null)
+        public static Tuple<List<Element>, List<Element>> clashingElements(Document doc, Application app, Document link = null)
         {
             //TODO : Create a separate addin to save configuration
 
             var linkedElements = new List<Element>();
             var localElements = new List<Element>();
-            var ClashingElements = new List<Element>();
+            var ClashingElementsA = new List<Element>();
+            var ClashingElementsB = new List<Element>();
+            
             //If second document was not provided, use first doc
             var SecondDocument = FormTools.linkedDocument == null ? doc: FormTools.linkedDocument;
 
@@ -61,8 +68,8 @@ namespace RevitClasher
 
                 //Hard coded selection
                 LogicalOrFilter filterLinkedCategories = new LogicalOrFilter(FormTools.SelectedCategories);
-                FilteredElementCollector walls = new FilteredElementCollector(SecondDocument).WherePasses(filterLinkedCategories).WhereElementIsNotElementType();
-                linkedElements = walls.ToElements() as List<Element>;
+                FilteredElementCollector collector = new FilteredElementCollector(SecondDocument).WherePasses(filterLinkedCategories).WhereElementIsNotElementType();
+                linkedElements = collector.ToElements() as List<Element>;
 
                 foreach (var item in linkedElements)
                 {
@@ -90,17 +97,21 @@ namespace RevitClasher
                         FilteredElementCollector bbClashingCollector = new FilteredElementCollector(doc, doc.ActiveView.Id).WherePasses(logicalOrFilter).WherePasses(bbFilter);
                         foreach (var element in bbClashingCollector.ToElements())
                         {
-                            if (!ClashingElements.Contains(element))
+                            if (!ClashingElementsA.Contains(element))
                             {
                                 if (getClashWithSolid(doc, geomTranslated, element))
-                                { ClashingElements.Add(element); }
+                                { ClashingElementsA.Add(element);
+                                ClashingElementsB.Add(item);
+                            }
                             }
                         }
                     }
 
                 
             }
-            return ClashingElements;
+
+            var output =Tuple.Create( ClashingElementsA.Distinct().ToList(), ClashingElementsB.Distinct().ToList());
+            return output;
         }
 
         /// <summary>
@@ -222,9 +233,9 @@ namespace RevitClasher
         /// <summary>
         /// Clear all overrides in view and just overrides selection to red
         /// </summary>
-        /// <param name="L"></param>
+        /// <param name="ClashingElements"></param>
         /// <param name="doc"></param>
-        public static void OverrideInView(List<Element> L, Document doc)
+        public static void OverrideInView(List<Element> ClashingElements, Document doc)
         {
             var activeView = doc.ActiveView;
 
@@ -236,15 +247,63 @@ namespace RevitClasher
                 activeView.SetElementOverrides(element, clean);
             }
 
-            OverrideGraphicSettings ogs = new OverrideGraphicSettings();
-            ogs.SetProjectionLineColor(new Color(255, 0, 0));
-            foreach (var e in L)
+            OverrideGraphicSettings ogsA = new OverrideGraphicSettings();
+            ogsA.SetProjectionFillColor(new Color(255, 0, 0));
+            ogsA.SetProjectionLineColor(new Color(255, 0, 0));
+            foreach (var e in ClashingElements)
             {
-                activeView.SetElementOverrides(e.Id, ogs);
+                activeView.SetElementOverrides(e.Id, ogsA);
             }
 
 
+
+            OverrideGraphicSettings ogsB = new OverrideGraphicSettings();
+            ogsB.SetProjectionLineColor(new Color(0, 0, 255));
+            ogsB.SetProjectionFillColor(new Color(0, 0, 255));
+        
+            foreach (var e in ClashingElements)
+            {
+                activeView.SetElementOverrides(e.Id, ogsB);
+            }
+
         }
+
+
+        /// <summary>
+        /// Clear all overrides in view and just overrides selection to red
+        /// </summary>
+        /// <param name="ClashingElements"></param>
+        /// <param name="doc"></param>
+        public static void OverrideInView(Tuple< List<Element>, List<Element> > ClashingElements, Document doc)
+        {
+            var activeView = doc.ActiveView;
+
+            FilteredElementCollector coll = new FilteredElementCollector(doc, doc.ActiveView.Id).WhereElementIsViewIndependent().WhereElementIsNotElementType();
+            var output = coll.ToElementIds();
+            OverrideGraphicSettings clean = new OverrideGraphicSettings();
+            foreach (var element in output)
+            {
+                activeView.SetElementOverrides(element, clean);
+            }
+
+            OverrideGraphicSettings ogsA = new OverrideGraphicSettings();
+            ogsA.SetProjectionLineColor(new Color(255, 0, 0));
+            foreach (var e in ClashingElements.Item1)
+            {
+                activeView.SetElementOverrides(e.Id, ogsA);
+            }
+
+
+
+            OverrideGraphicSettings ogsB = new OverrideGraphicSettings();
+            ogsB.SetProjectionLineColor(new Color(0, 255, 0));
+            foreach (var e in ClashingElements.Item2)
+            {
+                activeView.SetElementOverrides(e.Id, ogsB);
+            }
+
+        }
+
 
 
         public static void Focus(int id)
