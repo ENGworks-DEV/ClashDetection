@@ -108,9 +108,15 @@ namespace RevitClasher
                 // We give the objects to the new dialog;
                 // The dialog becomes the owner responsible for disposing them, eventually.
                 m_MyForm = new MainUserControl(exEvent, handler);
+                m_MyForm.Closed += MyFormClosed;
                 m_MyForm.Show();
             }
+           
         }
 
+        private void MyFormClosed(object sender, EventArgs e)
+        {
+            m_MyForm = null;
+        }
     }
 }
