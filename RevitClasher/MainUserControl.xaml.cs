@@ -103,11 +103,7 @@ namespace RevitClasher
 
         }
 
-        private void SaveConfig_Click(object sender, RoutedEventArgs e)
-        {
-            SaveConfiguration();
 
-        }
 
         private void SaveConfiguration()
         {
@@ -134,6 +130,7 @@ namespace RevitClasher
                 }
             }
             Properties.Settings.Default.SelectionB = selectionB;
+            Properties.Settings.Default.Save();
         }
 
         private void Run_Click(object sender, RoutedEventArgs e)
