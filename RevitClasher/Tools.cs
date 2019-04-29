@@ -17,6 +17,10 @@ namespace RevitClasher
     {
          public static void Execute ( Document doc)
         {
+
+            if (!MainUserControl._Reset)
+            {
+            
             var clashing = Clash.clashingElements(RevitTools.Doc, RevitTools.App);
             foreach (var item in clashing.Item1)
             {
@@ -29,7 +33,12 @@ namespace RevitClasher
             }
 
             RevitTools.OverrideInView(clashing, RevitTools.Doc);
+            }
+            else
+            {
+                RevitTools.OverrideInView(new List<Element>(), RevitTools.Doc);
 
+            }
         }
         
         public static SortedList<String, Document> Documents(Document doc, Application app)
