@@ -64,7 +64,7 @@ namespace RevitClasher
 
             m_MyForm = null;   // no dialog needed yet; the command will bring it
             thisApp = this;  // static access to this application instance
-
+            
             return Result.Succeeded;
 
         }
