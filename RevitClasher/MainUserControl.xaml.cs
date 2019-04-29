@@ -33,9 +33,8 @@ namespace RevitClasher
         public static bool _wasExecuted;
         public static MainUserControl thisForm;
         public static ObservableCollection<RevitElement> elementsClashingB { get; set; }
-
-        public static ObservableCollection<RevitElement> elementsClashingA{ get; set; }
-       
+        public static ObservableCollection<RevitElement> elementsClashingA { get; set; }
+        public static bool _Reset = false;
 
 
         public MainUserControl(ExternalEvent exEvent, ExternalEventClashDetection handler)
@@ -48,18 +47,19 @@ namespace RevitClasher
             this.DataContext = this;
 
             elementsClashingA = new ObservableCollection<RevitElement>();
-            
+
             elementsClashingA.CollectionChanged += updateA;
 
             elementsClashingB = new ObservableCollection<RevitElement>();
 
             elementsClashingB.CollectionChanged += updateB;
+            this.Topmost = true;
         }
 
         private void updateA(object sender, NotifyCollectionChangedEventArgs e)
         {
             ClashesA.Items.Add(MainUserControl.elementsClashingA.Last());
-           
+
         }
         private void updateB(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -83,7 +83,7 @@ namespace RevitClasher
                 CheckBox chbox = new CheckBox();
                 chbox.Content = c.Key;
                 SelectionBList.Items.Add(chbox);
-             //   SelectionAList.Items.Add(chbox);
+                //   SelectionAList.Items.Add(chbox);
 
             }
 
@@ -148,6 +148,7 @@ namespace RevitClasher
         {
             this.ClashesA.Items.Clear();
             this.ClashesB.Items.Clear();
+            _Reset = false;
             //Save Selection
             SaveConfiguration();
             _wasExecuted = false;
@@ -178,26 +179,27 @@ namespace RevitClasher
                 BuiltInCategory myCatEnum = (BuiltInCategory)Enum.Parse(typeof(BuiltInCategory), cat.Values[item].Id.ToString());
                 FormTools.SelectedHostCategories.Add(new ElementCategoryFilter(myCatEnum));
                 //Saving the local categories for a new run
-                
+
 
             }
             m_ExEvent.Raise();
 
 
-    
+
         }
 
 
 
         private void OnSelectedA(object sender, RoutedEventArgs e)
         {
-            try { 
-            if (ClashesA.SelectedItem != null)
+            try
             {
-                var vRVTElement = (RevitElement)ClashesA.SelectedItem;
+                if (ClashesA.SelectedItem != null)
+                {
+                    var vRVTElement = (RevitElement)ClashesA.SelectedItem;
 
-                RevitTools.Focus(vRVTElement.element.Id.IntegerValue);
-            }
+                    RevitTools.Focus(vRVTElement.element.Id.IntegerValue);
+                }
             }
             catch
             {
@@ -220,6 +222,22 @@ namespace RevitClasher
             catch
             {
 
+            }
+        }
+
+        private void Reset_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                _Reset = true;
+                this.ClashesA.Items.Clear();
+                this.ClashesB.Items.Clear();
+                m_ExEvent.Raise();
+
+            }
+            catch( Exception vEx)
+            {
+                MessageBox.Show(vEx.Message);
             }
         }
     }
