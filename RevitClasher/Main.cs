@@ -27,7 +27,8 @@ namespace RevitClasher
             RevitTools.App = app;
             RevitTools.Uidoc = uidoc;
 
-
+            Autodesk.Revit.DB.View view = doc.ActiveView;
+          
 
             if (doc.ActiveView.ViewType != ViewType.ThreeD)
             {
@@ -35,10 +36,17 @@ namespace RevitClasher
                 return Result.Failed;
             }
             var testView = doc.ActiveView as View3D;
+           
             if (!testView.IsSectionBoxActive)
             {
-                TaskDialog.Show("Error", "It only works if the 3D view has a section box active");
-                return Result.Failed;
+                using (Transaction tx = new Transaction(doc))
+                {
+                    tx.Start("ClashDetective");
+                    testView.IsSectionBoxActive = true;
+                    uiapp.ActiveUIDocument.RefreshActiveView();
+                    tx.Commit();
+
+                }
             }
 
             //Debug
