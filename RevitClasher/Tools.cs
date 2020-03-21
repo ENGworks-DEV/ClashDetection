@@ -15,24 +15,24 @@ namespace RevitClasher
     class Clash
 
     {
-         public static void Execute ( Document doc)
+        public static void Execute(Document doc)
         {
 
             if (!MainUserControl._Reset)
             {
-            
-            var clashing = Clash.clashingElements(RevitTools.Doc, RevitTools.App);
-            foreach (var item in clashing.Item1)
-            {
-                MainUserControl.elementsClashingA.Add(new RevitElement() { element = item });
-            }
+                
+                var clashing = Clash.clashingElements(RevitTools.Doc, RevitTools.App);
+                foreach (var item in clashing.Item1)
+                {
+                    MainUserControl.elementsClashingA.Add(new RevitElement() { element = item });
+                }
+                
+                foreach (var item in clashing.Item2)
+                {
+                    MainUserControl.elementsClashingB.Add(new RevitElement() { element = item });
+                }
 
-            foreach (var item in clashing.Item2)
-            {
-                MainUserControl.elementsClashingB.Add(new RevitElement() { element = item });
-            }
-
-            RevitTools.OverrideInView(clashing, RevitTools.Doc);
+                RevitTools.OverrideInView(clashing, RevitTools.Doc);
             }
             else
             {
@@ -40,7 +40,7 @@ namespace RevitClasher
 
             }
         }
-        
+
         public static SortedList<String, Document> Documents(Document doc, Application app)
         {
             SortedList<string, Document> output = new SortedList<string, Document>();
@@ -48,7 +48,7 @@ namespace RevitClasher
             foreach (Document d in app.Documents)
             {
 
-                    output.Add(d.Title, d);
+                output.Add(d.Title, d);
             }
             return output;
         }
@@ -60,9 +60,9 @@ namespace RevitClasher
             var localElements = new List<Element>();
             var ClashingElementsA = new List<Element>();
             var ClashingElementsB = new List<Element>();
-            
+
             //If second document was not provided, use first doc
-            var SecondDocument = FormTools.linkedDocument == null ? doc: FormTools.linkedDocument;
+            var SecondDocument = FormTools.linkedDocument == null ? doc : FormTools.linkedDocument;
 
             //Get the transformation of the linked model from the project location
             var transform = GetTransform(doc, SecondDocument);
@@ -71,55 +71,55 @@ namespace RevitClasher
             var ActiveViewBB = doc.ActiveView as View3D;
 
             BoundingBoxXYZ bbV = ActiveViewBB.GetSectionBox();
-      
 
-                var VisibleLinkedElements = new List<GeometryElement>();
 
-                //Hard coded selection
-                LogicalOrFilter filterLinkedCategories = new LogicalOrFilter(FormTools.SelectedCategories);
-                FilteredElementCollector collector = new FilteredElementCollector(SecondDocument).WherePasses(filterLinkedCategories).WhereElementIsNotElementType();
-                linkedElements = collector.ToElements() as List<Element>;
+            var VisibleLinkedElements = new List<GeometryElement>();
 
-                foreach (var item in linkedElements)
-                {
+            //Hard coded selection
+            LogicalOrFilter filterLinkedCategories = new LogicalOrFilter(FormTools.SelectedCategories);
+            FilteredElementCollector collector = new FilteredElementCollector(SecondDocument).WherePasses(filterLinkedCategories).WhereElementIsNotElementType();
+            linkedElements = collector.ToElements() as List<Element>;
 
-                    GeometryElement geom = item.get_Geometry(opt);
-                    GeometryElement geomTranslated = geom;
-                    ////Get bounding box from transformed geometry
-                    //By default use element geoemtry to extract bbox
-                    var bbox = geom.GetBoundingBox();
-                    if (transform != null) {
+            foreach (var item in linkedElements)
+            {
+
+                GeometryElement geom = item.get_Geometry(opt);
+                GeometryElement geomTranslated = geom;
+                ////Get bounding box from transformed geometry
+                //By default use element geoemtry to extract bbox
+                var bbox = geom.GetBoundingBox();
+                if (transform != null) {
 
                     //If translation is valid, use it to override the bbox
-                     geomTranslated = geom.GetTransformed(transform);
-                     bbox = geomTranslated.GetBoundingBox();
-                    }
+                    geomTranslated = geom.GetTransformed(transform);
+                    bbox = geomTranslated.GetBoundingBox();
+                }
 
-                    if (belongsToView(ActiveViewBB, bbox))
+                if (belongsToView(ActiveViewBB, bbox))
+                {
+                    //VisibleLinkedElements.Add(geomTranslated);
+                    Outline outline = new Outline(bbox.Min, bbox.Max);
+                    BoundingBoxIntersectsFilter bbFilter = new BoundingBoxIntersectsFilter(outline);
+
+                    LogicalOrFilter logicalOrFilter = new LogicalOrFilter(FormTools.SelectedHostCategories);
+
+                    FilteredElementCollector bbClashingCollector = new FilteredElementCollector(doc, doc.ActiveView.Id).WherePasses(logicalOrFilter).WherePasses(bbFilter);
+                    foreach (var element in bbClashingCollector.ToElements())
                     {
-                        //VisibleLinkedElements.Add(geomTranslated);
-                        Outline outline = new Outline(bbox.Min, bbox.Max);
-                        BoundingBoxIntersectsFilter bbFilter = new BoundingBoxIntersectsFilter(outline);
-
-                        LogicalOrFilter logicalOrFilter = new LogicalOrFilter(FormTools.SelectedHostCategories);
-
-                        FilteredElementCollector bbClashingCollector = new FilteredElementCollector(doc, doc.ActiveView.Id).WherePasses(logicalOrFilter).WherePasses(bbFilter);
-                        foreach (var element in bbClashingCollector.ToElements())
+                        if (!ClashingElementsA.Contains(element))
                         {
-                            if (!ClashingElementsA.Contains(element))
-                            {
-                                if (getClashWithSolid(doc, geomTranslated, element))
-                                { ClashingElementsA.Add(element);
+                            if (getClashWithSolid(doc, geomTranslated, element))
+                            { ClashingElementsA.Add(element);
                                 ClashingElementsB.Add(item);
-                            }
                             }
                         }
                     }
+                }
 
-                
+
             }
 
-            var output =Tuple.Create( ClashingElementsA.Distinct().ToList(), ClashingElementsB.Distinct().ToList());
+            var output = Tuple.Create(ClashingElementsA.Distinct().ToList(), ClashingElementsB.Distinct().ToList());
             return output;
         }
 
@@ -206,7 +206,7 @@ namespace RevitClasher
         internal static List<ElementFilter> SelectionA()
         {
             //TODO: change to UI selection
-            var categories =  new List<ElementFilter>() {
+            var categories = new List<ElementFilter>() {
                 new ElementCategoryFilter(BuiltInCategory.OST_DuctCurves),
                 new ElementCategoryFilter(BuiltInCategory.OST_PipeCurves),
 
@@ -233,6 +233,26 @@ namespace RevitClasher
         }
     }
 
+    /// <summary>
+    /// Future implementation, groud by clashing elements
+    /// </summary>
+    class ClashItems
+    {
+        public static RevitElement ElementA { get; set; }
+
+        public static RevitElement ElementB { get; set; }
+
+        public string Name
+        {
+            get { return ElementA.Name + " " + ElementB.Name; }
+        }
+        public string ToString()
+        {
+            return Name;
+        }
+
+    }
+
     class RevitTools
     {
         public static Document Doc { get; set; }
@@ -247,6 +267,12 @@ namespace RevitClasher
         public static void OverrideInView(List<Element> ClashingElements, Document doc)
         {
             var activeView = doc.ActiveView;
+
+            if (activeView.IsTemporaryHideIsolateActive())
+            {
+                TemporaryViewMode tempView = TemporaryViewMode.TemporaryHideIsolate;
+                activeView.DisableTemporaryViewMode(tempView);
+            }
 
             FilteredElementCollector coll = new FilteredElementCollector(doc, doc.ActiveView.Id).WhereElementIsViewIndependent().WhereElementIsNotElementType();
             var output = coll.ToElementIds();
@@ -295,11 +321,15 @@ namespace RevitClasher
                 activeView.SetElementOverrides(element, clean);
             }
 
+
+            var c = new List<ElementId>();
+            
             OverrideGraphicSettings ogsA = new OverrideGraphicSettings();
             ogsA.SetProjectionLineColor(new Color(255, 0, 0));
             foreach (var e in ClashingElements.Item1)
             {
                 activeView.SetElementOverrides(e.Id, ogsA);
+                c.Add(e.Id);
             }
 
 
@@ -309,8 +339,10 @@ namespace RevitClasher
             foreach (var e in ClashingElements.Item2)
             {
                 activeView.SetElementOverrides(e.Id, ogsB);
+                c.Add(e.Id);
             }
 
+            activeView.IsolateElementsTemporary(c);
         }
 
 

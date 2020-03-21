@@ -23,25 +23,27 @@
 
     <Grid>
 
-        <ListBox  Name="SelectionAList" HorizontalAlignment="Left" Height="200" Margin="10,81,0,0" VerticalAlignment="Top" Width="180">
+        <ListBox  Name="SelectionAList" HorizontalAlignment="Left" Height="200" Margin="10,128,0,0" VerticalAlignment="Top" Width="180">
 
         </ListBox>
-        <ListBox  Name="SelectionBList" HorizontalAlignment="Left" Height="200" Margin="208,81,0,0" VerticalAlignment="Top" Width="180">
+        <ListBox  Name="SelectionBList" HorizontalAlignment="Left" Height="200" Margin="208,128,0,0" VerticalAlignment="Top" Width="180">
 
         </ListBox>
-        <ComboBox Name="ListOfLinks" HorizontalAlignment="Left" Height="20" Margin="10,27,0,0" VerticalAlignment="Top" Width="380"/>
-        <Button x:Name="Run" Content="Execute" HorizontalAlignment="Left" Height="24" Margin="273,294,0,0" VerticalAlignment="Top" Width="115" Click="Run_Click"/>
-        <Button x:Name="Reset" Content="Reset" HorizontalAlignment="Left" Height="24" Margin="10,294,0,0" VerticalAlignment="Top" Width="125" Click="Reset_Click" />
+        <ComboBox Name="ListOfLinks" HorizontalAlignment="Left" Height="22" Margin="10,27,0,0" VerticalAlignment="Top" Width="380"/>
+        <Button x:Name="Run" Content="Execute" HorizontalAlignment="Left" Height="24" Margin="273,376,0,0" VerticalAlignment="Top" Width="115" Click="Run_Click"/>
+        <Button x:Name="Reset" Content="Reset" HorizontalAlignment="Left" Height="24" Margin="10,376,0,0" VerticalAlignment="Top" Width="125" Click="Reset_Click" />
 
 
-        <ListBox  Name="ClashesA"  HorizontalAlignment="Left" DisplayMemberPath="Name" DataContext="{Binding elementsClashingA}" Height="162" Margin="10,360,0,0" SelectionChanged="OnSelectedA" VerticalAlignment="Top" Width="378">
+        <ListBox  Name="ClashesA"  HorizontalAlignment="Left" DisplayMemberPath="Name" DataContext="{Binding elementsClashingA}" Height="120" Margin="10,434,0,0" SelectionChanged="OnSelectedA" VerticalAlignment="Top" Width="378">
         </ListBox>
-
-        <Label Content="Selection A  - Clash Results - Click to select and zoom" HorizontalAlignment="Left" Height="24" Margin="10,331,0,0" VerticalAlignment="Top" Width="358"/>
+        <ListBox  x:Name="ClashesB"  HorizontalAlignment="Left" DisplayMemberPath="Name" DataContext="{Binding elementsClashingB}" Height="120" Margin="10,588,0,0" SelectionChanged="OnSelectedB" VerticalAlignment="Top" Width="378"/>
+        <Label Content="Selection A  - Clash Results - Click to select and zoom" HorizontalAlignment="Left" Height="24" Margin="10,405,0,0" VerticalAlignment="Top" Width="358"/>
         <Label Content="Available models for Selection B " HorizontalAlignment="Left" Height="24" Margin="10,1,0,0" VerticalAlignment="Top" Width="180"/>
         <Label Content="Selection A - Local Selection " HorizontalAlignment="Left" Height="24" Margin="10,57,0,0" VerticalAlignment="Top" Width="180"/>
         <Label Content="Selection B" HorizontalAlignment="Left" Height="24" Margin="208,56,0,0" VerticalAlignment="Top" Width="180"/>
-        <ListBox  x:Name="ClashesB"  HorizontalAlignment="Left" DisplayMemberPath="Name" DataContext="{Binding elementsClashingB}" Height="162" Margin="10,546,0,0" SelectionChanged="OnSelectedB" VerticalAlignment="Top" Width="378"/>
-        <Label Content="Selection B - Clash Results - Click to select and zoom" HorizontalAlignment="Left" Height="24" Margin="10,522,0,0" VerticalAlignment="Top" Width="358"/>
+        
+        <Label Content="Selection B - Clash Results - Click to select and zoom" HorizontalAlignment="Left" Height="24" Margin="10,559,0,0" VerticalAlignment="Top" Width="358"/>
+        <TextBox HorizontalAlignment="Left" Height="22" Margin="10,90,0,0" TextWrapping="Wrap" Name="SearchA" Text="SearchA" VerticalAlignment="Top" Width="180" TextChanged="SearchA_TextChanged"/>
+        <TextBox HorizontalAlignment="Left" Height="22" Margin="208,90,0,0" TextWrapping="Wrap" Name="SearchB" Text="SearchB" VerticalAlignment="Top" Width="180" TextChanged="SearchB_TextChanged"/>
     </Grid>
 </Window>
