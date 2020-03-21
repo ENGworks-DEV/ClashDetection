@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -75,14 +76,15 @@ namespace RevitClasher
             {
                 ListOfLinks.Items.Add(item.Key);
             }
-
+            var SelectionA = new List<CheckBox>();
+            var SelectionB = new List<CheckBox>();
             var categories = FormTools.ListOfCategories(RevitTools.Doc);
             foreach (var c in categories)
             {
                 //List of 
                 CheckBox chbox = new CheckBox();
                 chbox.Content = c.Key;
-                SelectionBList.Items.Add(chbox);
+                SelectionB.Add(chbox);
                 //   SelectionAList.Items.Add(chbox);
 
             }
@@ -92,10 +94,12 @@ namespace RevitClasher
                 //List of 
                 CheckBox chbox = new CheckBox();
                 chbox.Content = c.Key;
-                SelectionAList.Items.Add(chbox);
+                SelectionA.Add(chbox);
                 //   SelectionAList.Items.Add(chbox);
 
             }
+            SelectionAList.ItemsSource = SelectionA;
+            SelectionBList.ItemsSource = SelectionB;
 
             //Presetting everything from a previous run
             foreach (var item in RevitClasher.Properties.Settings.Default.SelectionB)
@@ -120,9 +124,11 @@ namespace RevitClasher
         {
             Properties.Settings.Default.ListOfLinks = ListOfLinks.SelectedIndex;
             StringCollection selectionA = new StringCollection();
-            for (int i = 0; i < SelectionAList.Items.Count; i++)
+            var listA = ((IEnumerable<CheckBox>)SelectionAList.ItemsSource);
+            var listB = ((IEnumerable<CheckBox>)SelectionBList.ItemsSource);
+            for (int i = 0; i < listA.Count(); i++)
             {
-                CheckBox chbox = SelectionAList.Items[i] as CheckBox;
+                CheckBox chbox = listA.ElementAt(i) as CheckBox;
                 if (chbox.IsChecked.Value)
                 {
                     selectionA.Add(i.ToString());
@@ -132,9 +138,9 @@ namespace RevitClasher
 
 
             StringCollection selectionB = new StringCollection();
-            for (int i = 0; i < SelectionBList.Items.Count; i++)
+            for (int i = 0; i < listB.Count(); i++)
             {
-                CheckBox chbox = SelectionBList.Items[i] as CheckBox;
+                CheckBox chbox = listB.ElementAt(i) as CheckBox;
                 if (chbox.IsChecked.Value)
                 {
                     selectionB.Add(i.ToString());
@@ -240,6 +246,40 @@ namespace RevitClasher
                 MessageBox.Show(vEx.Message);
             }
         }
+
+        private void SearchA_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (SelectionAList.ItemsSource != null)
+            {
+                CollectionView view = CollectionViewSource.GetDefaultView(SelectionAList.ItemsSource) as CollectionView;
+                view.Filter = CategoryFilterA;
+
+            }
+
+        }
+        private bool CategoryFilterA(object item)
+        {
+
+
+            CheckBox Items = (CheckBox)item;
+            return Items.Content.ToString().ToUpper().Contains(SearchA.Text.ToUpper());
+        }
+        private void SearchB_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (SelectionBList.ItemsSource != null)
+            {
+                CollectionView view = CollectionViewSource.GetDefaultView(SelectionBList.ItemsSource) as CollectionView;
+                view.Filter = CategoryFilterB;
+
+            }
+        }
+
+        private bool CategoryFilterB(object item)
+        {
+            CheckBox Items = (CheckBox)item;
+            return Items.Content.ToString().ToUpper().Contains(SearchB.Text.ToUpper());
+        }
+
     }
 
 }
