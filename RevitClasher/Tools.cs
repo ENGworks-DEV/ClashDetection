@@ -22,14 +22,9 @@ namespace RevitClasher
             {
                 
                 var clashing = Clash.clashingElements(RevitTools.Doc, RevitTools.App);
-                foreach (var item in clashing.Item1)
+                foreach (var item in clashing)
                 {
-                    MainUserControl.elementsClashingA.Add(new RevitElement() { element = item });
-                }
-                
-                foreach (var item in clashing.Item2)
-                {
-                    MainUserControl.elementsClashingB.Add(new RevitElement() { element = item });
+                    MainUserControl.elementsClashingA.Add(item);
                 }
 
                 RevitTools.OverrideInView(clashing, RevitTools.Doc);
@@ -52,7 +47,7 @@ namespace RevitClasher
             }
             return output;
         }
-        public static Tuple<List<Element>, List<Element>> clashingElements(Document doc, Application app, Document link = null)
+        public static List<ClashItems> clashingElements(Document doc, Application app, Document link = null)
         {
             //TODO : Create a separate addin to save configuration
 
@@ -80,6 +75,7 @@ namespace RevitClasher
             FilteredElementCollector collector = new FilteredElementCollector(SecondDocument).WherePasses(filterLinkedCategories).WhereElementIsNotElementType();
             linkedElements = collector.ToElements() as List<Element>;
 
+            var ClashItemsList = new List<ClashItems>();
             foreach (var item in linkedElements)
             {
 
@@ -109,8 +105,11 @@ namespace RevitClasher
                         if (!ClashingElementsA.Contains(element))
                         {
                             if (getClashWithSolid(doc, geomTranslated, element))
-                            { ClashingElementsA.Add(element);
-                                ClashingElementsB.Add(item);
+                            {
+                                var vG = new ClashItems();
+                                vG.ElementA = element;
+                                vG.ElementB = item;
+                                ClashItemsList.Add(vG);
                             }
                         }
                     }
@@ -119,8 +118,8 @@ namespace RevitClasher
 
             }
 
-            var output = Tuple.Create(ClashingElementsA.Distinct().ToList(), ClashingElementsB.Distinct().ToList());
-            return output;
+
+            return ClashItemsList;
         }
 
         /// <summary>
@@ -236,16 +235,20 @@ namespace RevitClasher
     /// <summary>
     /// Future implementation, groud by clashing elements
     /// </summary>
-    class ClashItems
+    public class ClashItems
     {
-        public static RevitElement ElementA { get; set; }
+        //public static RevitElement ElementA { get; set; }
 
-        public static RevitElement ElementB { get; set; }
+        //public static RevitElement ElementB { get; set; }
 
         public string Name
         {
-            get { return ElementA.Name + " " + ElementB.Name; }
+            get { return "Group " + ElementA.Name +"-" + ElementB.Name; }
         }
+
+        public Element ElementA { get; internal set; }
+
+        public Element ElementB { get; internal set; }
         public string ToString()
         {
             return Name;
@@ -268,19 +271,7 @@ namespace RevitClasher
         {
             var activeView = doc.ActiveView;
 
-            if (activeView.IsTemporaryHideIsolateActive())
-            {
-                TemporaryViewMode tempView = TemporaryViewMode.TemporaryHideIsolate;
-                activeView.DisableTemporaryViewMode(tempView);
-            }
-
-            FilteredElementCollector coll = new FilteredElementCollector(doc, doc.ActiveView.Id).WhereElementIsViewIndependent().WhereElementIsNotElementType();
-            var output = coll.ToElementIds();
-            OverrideGraphicSettings clean = new OverrideGraphicSettings();
-            foreach (var element in output)
-            {
-                activeView.SetElementOverrides(element, clean);
-            }
+            ResetView();
 
             OverrideGraphicSettings ogsA = new OverrideGraphicSettings();
             ogsA.SetProjectionFillColor(new Color(255, 0, 0));
@@ -309,24 +300,19 @@ namespace RevitClasher
         /// </summary>
         /// <param name="ClashingElements"></param>
         /// <param name="doc"></param>
-        public static void OverrideInView(Tuple< List<Element>, List<Element> > ClashingElements, Document doc)
+        public static void OverrideInView( List<ClashItems>  ClashingElements, Document doc)
         {
             var activeView = doc.ActiveView;
 
-            FilteredElementCollector coll = new FilteredElementCollector(doc, doc.ActiveView.Id).WhereElementIsViewIndependent().WhereElementIsNotElementType();
-            var output = coll.ToElementIds();
-            OverrideGraphicSettings clean = new OverrideGraphicSettings();
-            foreach (var element in output)
-            {
-                activeView.SetElementOverrides(element, clean);
-            }
+                ResetView();
 
+ 
 
             var c = new List<ElementId>();
             
             OverrideGraphicSettings ogsA = new OverrideGraphicSettings();
             ogsA.SetProjectionLineColor(new Color(255, 0, 0));
-            foreach (var e in ClashingElements.Item1)
+            foreach (var e in ClashingElements.Select(x=> x.ElementA).ToList())
             {
                 activeView.SetElementOverrides(e.Id, ogsA);
                 c.Add(e.Id);
@@ -336,24 +322,77 @@ namespace RevitClasher
 
             OverrideGraphicSettings ogsB = new OverrideGraphicSettings();
             ogsB.SetProjectionLineColor(new Color(0, 255, 0));
-            foreach (var e in ClashingElements.Item2)
+            foreach (var e in ClashingElements.Select(x => x.ElementB).ToList())
             {
                 activeView.SetElementOverrides(e.Id, ogsB);
                 c.Add(e.Id);
             }
-
-            activeView.IsolateElementsTemporary(c);
+            if (MainUserControl._Isolate) {
+                activeView.IsolateElementsTemporary(c);
+            }
+            
         }
 
 
 
-        public static void Focus(int id)
+        public static void Focus(ClashItems elements)
         {
-            ElementId Id = new ElementId(id);
-            Element e = RevitTools.Doc.GetElement(Id);
-            RevitTools.Uidoc.Selection.SetElementIds(new List<ElementId>() { e.Id });
-            RevitTools.Uidoc.ShowElements(e);
+            if (MainUserControl._CropBox)
+            {
+                CreateBox(elements);
+            }
+            View activeView = RevitTools.Doc.ActiveView;
+            ResetView();
+            var listOfId = new List<ElementId>();
+            listOfId.Add(elements.ElementA.Id);
+            listOfId.Add(elements.ElementB.Id);
+            RevitTools.Uidoc.Selection.SetElementIds(listOfId);
+            RevitTools.Uidoc.ShowElements(listOfId);
+            if (MainUserControl._Isolate)
+            {
+                activeView.IsolateElementsTemporary(listOfId);
+            }
 
+
+        }
+
+        public static void CreateBox(ClashItems elements)
+        {
+            View activeView = (View3D)RevitTools.Doc.ActiveView;
+            if (MainUserControl._CropBox)
+            {
+
+                BoundingBoxXYZ boundingBoxXYZ = elements.ElementA.get_BoundingBox(activeView);
+                activeView.CropBox = boundingBoxXYZ;
+                
+            }
+            else
+            {
+                activeView.CropBox = null;
+            }
+
+        }
+
+        public static void ResetView()
+        {
+            View activeView = RevitTools.Doc.ActiveView;
+
+            FilteredElementCollector coll = new FilteredElementCollector(RevitTools.Doc, activeView.Id).WhereElementIsViewIndependent().WhereElementIsNotElementType();
+            var output = coll.ToElementIds();
+            OverrideGraphicSettings clean = new OverrideGraphicSettings();
+            foreach (var element in output)
+            {
+                activeView.SetElementOverrides(element, clean);
+            }
+
+
+            
+            if (activeView.IsTemporaryHideIsolateActive())
+            {
+                TemporaryViewMode tempView = TemporaryViewMode.TemporaryHideIsolate;
+                activeView.DisableTemporaryViewMode(tempView);
+            }
+            
         }
     }
 }

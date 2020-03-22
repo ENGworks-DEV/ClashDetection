@@ -33,10 +33,11 @@ namespace RevitClasher
         private ExternalEventClashDetection m_Handler;
         public static bool _wasExecuted;
         public static MainUserControl thisForm;
-        public static ObservableCollection<RevitElement> elementsClashingB { get; set; }
-        public static ObservableCollection<RevitElement> elementsClashingA { get; set; }
+        public static ObservableCollection<ClashItems> elementsClashingB { get; set; }
+        public static ObservableCollection<ClashItems> elementsClashingA { get; set; }
         public static bool _Reset = false;
-
+        internal static bool _Isolate = false;
+        internal static bool _CropBox = false;
 
         public MainUserControl(ExternalEvent exEvent, ExternalEventClashDetection handler)
         {
@@ -47,26 +48,19 @@ namespace RevitClasher
 
             this.DataContext = this;
 
-            elementsClashingA = new ObservableCollection<RevitElement>();
+            elementsClashingA = new ObservableCollection<ClashItems>();
 
             elementsClashingA.CollectionChanged += updateA;
 
-            elementsClashingB = new ObservableCollection<RevitElement>();
-
-            elementsClashingB.CollectionChanged += updateB;
             this.Topmost = true;
         }
 
         private void updateA(object sender, NotifyCollectionChangedEventArgs e)
         {
-            ClashesA.Items.Add(MainUserControl.elementsClashingA.Last());
+            Results.Items.Add(MainUserControl.elementsClashingA.Last());
 
         }
-        private void updateB(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            ClashesB.Items.Add(MainUserControl.elementsClashingB.Last());
 
-        }
 
         public void FillForm()
         {
@@ -152,8 +146,8 @@ namespace RevitClasher
 
         private void Run_Click(object sender, RoutedEventArgs e)
         {
-            this.ClashesA.Items.Clear();
-            this.ClashesB.Items.Clear();
+            this.Results.Items.Clear();
+
             _Reset = false;
             //Save Selection
             SaveConfiguration();
@@ -200,11 +194,12 @@ namespace RevitClasher
         {
             try
             {
-                if (ClashesA.SelectedItem != null)
+                if (Results.SelectedItem != null)
                 {
-                    var vRVTElement = (RevitElement)ClashesA.SelectedItem;
+                    
+                    var vRVTElement = (ClashItems)Results.SelectedItem;
 
-                    RevitTools.Focus(vRVTElement.element.Id.IntegerValue);
+                    RevitTools.Focus(vRVTElement);
                 }
             }
             catch
@@ -214,37 +209,11 @@ namespace RevitClasher
         }
 
 
-        private void OnSelectedB(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                if (ClashesB.SelectedItem != null)
-                {
-                    var vRVTElement = (RevitElement)ClashesB.SelectedItem;
 
-                    RevitTools.Focus(vRVTElement.element.Id.IntegerValue);
-                }
-            }
-            catch
-            {
-
-            }
-        }
 
         private void Reset_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                _Reset = true;
-                this.ClashesA.Items.Clear();
-                this.ClashesB.Items.Clear();
-                m_ExEvent.Raise();
-
-            }
-            catch( Exception vEx)
-            {
-                MessageBox.Show(vEx.Message);
-            }
+            RevitTools.ResetView();
         }
 
         private void SearchA_TextChanged(object sender, TextChangedEventArgs e)
@@ -280,6 +249,31 @@ namespace RevitClasher
             return Items.Content.ToString().ToUpper().Contains(SearchB.Text.ToUpper());
         }
 
+        private void Clean_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                _Reset = true;
+                this.Results.Items.Clear();
+
+                m_ExEvent.Raise();
+
+            }
+            catch (Exception vEx)
+            {
+                MessageBox.Show(vEx.Message);
+            }
+        }
+
+        private void IsolateElements_Checked(object sender, RoutedEventArgs e)
+        {
+            _Isolate = IsolateElements.IsChecked ?? false;
+        }
+
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            //_CropBox = CropBox.IsChecked ?? false;
+        }
     }
 
 }
