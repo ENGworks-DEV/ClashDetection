@@ -100,7 +100,7 @@ namespace RevitClasher
                     {
                         if (!ClashingElementsA.Contains(elementA))
                         {
-                            if (getClashWithSolid(doc, geomTranslated, elementB))
+                            if (getClashWithSolid(doc, geomTranslated, elementA))
                             {
                                 ClashItems clashItems = new ClashItems
                                 {
@@ -168,12 +168,12 @@ namespace RevitClasher
         /// Detects the collision or clash between two elements. By analyzing the geometry intersection of an element (Element A) against other element (Element B)
         /// </summary>
         /// <param name="doc">Active revit document</param>
-        /// <param name="geometryElement">Geometry element from which the intersection will be verified (Element A)</param>
-        /// <param name="element">Element to verify the presence of intersection (Element B)</param>
+        /// <param name="geometryElement">Geometry element from which the intersection will be verified (Element B)</param>
+        /// <param name="element">Element to verify the presence of intersection (Element A)</param>
         /// <returns>A Boolean flag that indicates whether or not there is a clash between elements. True = Clash detected. False = No clash detected</returns>
         public static bool getClashWithSolid(Document doc, GeometryElement geometryElement, Element element)
         {
-            // Elements list, This list contains the Id's of element B
+            // Elements list, This list contains the Id's of element A
             List<ElementId> elementsList = new List<ElementId>();
             elementsList.Add(element.Id);
 
@@ -189,6 +189,16 @@ namespace RevitClasher
                     Solid solidObject = geomObj as Solid;
                     ElementIntersectsSolidFilter elementIntersectsSolidFilter = new ElementIntersectsSolidFilter(solidObject);
                     FilteredElementCollector collector = new FilteredElementCollector(doc, elementsList).WherePasses(elementIntersectsSolidFilter);
+                    
+                    // If collector count is zero, this means that Solid intersection can't be possible with the given element (ie: Fabrication Parts).
+                    if(collector.Count() == 0)
+                    {
+                        BoundingBoxXYZ bbox = geometryElement.GetBoundingBox();
+                        Outline outline = new Outline(bbox.Min, bbox.Max);
+                        BoundingBoxIntersectsFilter bbFilter = new BoundingBoxIntersectsFilter(outline);
+                        collector = new FilteredElementCollector(doc, elementsList).WherePasses(bbFilter);
+                    }
+
                     foreach (var item in collector)
                     {
                         clashOutputFlag = true;
