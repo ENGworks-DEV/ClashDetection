@@ -165,10 +165,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>IF EXIST "%25APPDATA%25\Autodesk\Revit\Addins\2018\RevitClasher" rmdir /S /Q "%25APPDATA%25\Autodesk\Revit\Addins\2018\RevitClasher"
-mkdir "%25APPDATA%25\Autodesk\Revit\Addins\2018\RevitClasher"
-xcopy /Y "$(TargetFileName)" "%25APPDATA%25\Autodesk\Revit\Addins\2018\RevitClasher\"
-xcopy /Y "$(TargetDir)\Resources" "%25APPDATA%25\Autodesk\Revit\Addins\2018\RevitClasher\Resources\"
-xcopy /Y "$(ProjectDir)RevitClasher.addin" "%25APPDATA%25\Autodesk\Revit\Addins\2018\"</PostBuildEvent>
+    <PostBuildEvent>IF EXIST "%25APPDATA%25\Autodesk\Revit\Addins\2019\RevitClasher" rmdir /S /Q "%25APPDATA%25\Autodesk\Revit\Addins\2020\RevitClasher"
+mkdir "%25APPDATA%25\Autodesk\Revit\Addins\2019\RevitClasher"
+xcopy /Y "$(TargetFileName)" "%25APPDATA%25\Autodesk\Revit\Addins\2020\RevitClasher\"
+xcopy /Y "$(TargetDir)\Resources" "%25APPDATA%25\Autodesk\Revit\Addins\2020\RevitClasher\Resources\"
+xcopy /Y "$(ProjectDir)RevitClasher.addin" "%25APPDATA%25\Autodesk\Revit\Addins\2020\"</PostBuildEvent>
   </PropertyGroup>
 </Project>
