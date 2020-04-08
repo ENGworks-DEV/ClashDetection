@@ -168,7 +168,7 @@ namespace RevitClasher
         /// Detects the collision or clash between two elements. By analyzing the geometry intersection of an element (Element A) against other element (Element B)
         /// </summary>
         /// <param name="doc">Active revit document</param>
-        /// <param name="geometryElement">Geometry of the element that will be intersected (Element A)</param>
+        /// <param name="geometryElement">Geometry element from which the intersection will be verified (Element A)</param>
         /// <param name="element">Element to verify the presence of intersection (Element B)</param>
         /// <returns>A Boolean flag that indicates whether or not there is a clash between elements. True = Clash detected. False = No clash detected</returns>
         public static bool getClashWithSolid(Document doc, GeometryElement geometryElement, Element element)
