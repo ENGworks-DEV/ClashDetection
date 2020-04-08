@@ -20,7 +20,7 @@ namespace RevitClasher
 
             if (!MainUserControl._Reset)
             {
-                
+
                 var clashing = Clash.clashingElements(RevitTools.Doc, RevitTools.App);
                 foreach (var item in clashing)
                 {
@@ -65,27 +65,22 @@ namespace RevitClasher
             Autodesk.Revit.DB.Options opt = new Options();
             var ActiveViewBB = doc.ActiveView as View3D;
 
-            BoundingBoxXYZ bbV = ActiveViewBB.GetSectionBox();
-
-
-            var VisibleLinkedElements = new List<GeometryElement>();
-
             //Hard coded selection
             LogicalOrFilter filterLinkedCategories = new LogicalOrFilter(FormTools.SelectedCategories);
             FilteredElementCollector collector = new FilteredElementCollector(SecondDocument).WherePasses(filterLinkedCategories).WhereElementIsNotElementType();
             linkedElements = collector.ToElements() as List<Element>;
 
             var ClashItemsList = new List<ClashItems>();
-            foreach (var item in linkedElements)
+            foreach (Element elementB in linkedElements)
             {
 
-                GeometryElement geom = item.get_Geometry(opt);
+                GeometryElement geom = elementB.get_Geometry(opt);
                 GeometryElement geomTranslated = geom;
-                ////Get bounding box from transformed geometry
-                //By default use element geoemtry to extract bbox
+                // Get bounding box from transformed geometry
+                // By default use element geoemtry to extract bbox
                 var bbox = geom.GetBoundingBox();
-                if (transform != null) {
-
+                if (transform != null)
+                {
                     //If translation is valid, use it to override the bbox
                     geomTranslated = geom.GetTransformed(transform);
                     bbox = geomTranslated.GetBoundingBox();
@@ -100,24 +95,25 @@ namespace RevitClasher
                     LogicalOrFilter logicalOrFilter = new LogicalOrFilter(FormTools.SelectedHostCategories);
 
                     FilteredElementCollector bbClashingCollector = new FilteredElementCollector(doc, doc.ActiveView.Id).WherePasses(logicalOrFilter).WherePasses(bbFilter);
-                    foreach (var element in bbClashingCollector.ToElements())
+
+                    foreach (Element elementA in bbClashingCollector.ToElements())
                     {
-                        if (!ClashingElementsA.Contains(element))
+                        if (!ClashingElementsA.Contains(elementA))
                         {
-                            if (getClashWithSolid(doc, geomTranslated, element))
+                            if (getClashWithSolid(doc, geomTranslated, elementB))
                             {
-                                var vG = new ClashItems();
-                                vG.ElementA = element;
-                                vG.ElementB = item;
-                                ClashItemsList.Add(vG);
+                                ClashItems clashItems = new ClashItems
+                                {
+                                    ElementA = elementA,
+                                    ElementB = elementB
+                                };
+
+                                 ClashItemsList.Add(clashItems);
                             }
                         }
                     }
                 }
-
-
             }
-
 
             return ClashItemsList;
         }
@@ -167,35 +163,58 @@ namespace RevitClasher
             return false;
         }
 
-        public static bool getClashWithSolid(Document doc, GeometryElement a, Element b)
+
+        /// <summary>
+        /// Detects the collision or clash between two elements. By analyzing the geometry intersection of an element (Element A) against other element (Element B)
+        /// </summary>
+        /// <param name="doc">Active revit document</param>
+        /// <param name="geometryElement">Geometry of the element that will be intersected (Element A)</param>
+        /// <param name="element">Element to verify the presence of intersection (Element B)</param>
+        /// <returns>A Boolean flag that indicates whether or not there is a clash between elements. True = Clash detected. False = No clash detected</returns>
+        public static bool getClashWithSolid(Document doc, GeometryElement geometryElement, Element element)
         {
+            // Elements list, This list contains the Id's of element B
+            List<ElementId> elementsList = new List<ElementId>();
+            elementsList.Add(element.Id);
 
-            //ElementId id = doc.GetElement(b).Id;
-            List<ElementId> l = new List<ElementId>();
-            l.Add(b.Id);
-
-            bool output = false;
+            bool clashOutputFlag = false;
 
             //Look for each solid in linked model
-            foreach (var geomObj in a)
+            foreach (GeometryObject geomObj in geometryElement)
             {
-                Solid geomSolid = geomObj as Solid;
-                if (null != geomSolid)
+                // If solid is present we perform a solid intersection filter.
+                // and later, perform a filter iteration with the element to clash (Element A vs Element B)
+                if(geomObj is Solid)
                 {
-
-                    ElementIntersectsSolidFilter elementIntersectsSolidFilter = new ElementIntersectsSolidFilter(geomSolid);
-                    FilteredElementCollector collector = new FilteredElementCollector(doc, l).WherePasses(elementIntersectsSolidFilter);
+                    Solid solidObject = geomObj as Solid;
+                    ElementIntersectsSolidFilter elementIntersectsSolidFilter = new ElementIntersectsSolidFilter(solidObject);
+                    FilteredElementCollector collector = new FilteredElementCollector(doc, elementsList).WherePasses(elementIntersectsSolidFilter);
                     foreach (var item in collector)
                     {
-                        output = true;
+                        clashOutputFlag = true;
                         break;
                     }
-
                 }
-                if (false != output) break;
+
+                // If a Geometry instance is present. We implement a BoundingBox intersect filter over the Geometry of element A
+                // and later, perform a Filter iteration with the element to clash (Element A vs Element B)
+                if(geomObj is GeometryInstance)
+                {
+                    BoundingBoxXYZ bbox = geometryElement.GetBoundingBox();
+                    Outline outline = new Outline(bbox.Min, bbox.Max);
+                    BoundingBoxIntersectsFilter bbFilter = new BoundingBoxIntersectsFilter(outline);
+                    FilteredElementCollector collector = new FilteredElementCollector(doc, elementsList).WherePasses(bbFilter);
+                    foreach (var item in collector)
+                    {
+                        clashOutputFlag = true;
+                        break;
+                    }
+                }
+
+                if (!clashOutputFlag) break;
             }
 
-            return output;
+            return clashOutputFlag;
         }
 
         /// <summary>
@@ -243,7 +262,7 @@ namespace RevitClasher
 
         public string Name
         {
-            get { return "Group " + ElementA.Name +"-" + ElementB.Name; }
+            get { return "Group " + ElementA.Name + "-" + ElementB.Name; }
         }
 
         public Element ElementA { get; internal set; }
@@ -286,7 +305,7 @@ namespace RevitClasher
             OverrideGraphicSettings ogsB = new OverrideGraphicSettings();
             ogsB.SetProjectionLineColor(new Color(0, 0, 255));
             ogsB.SetProjectionFillColor(new Color(0, 0, 255));
-        
+
             foreach (var e in ClashingElements)
             {
                 activeView.SetElementOverrides(e.Id, ogsB);
@@ -300,19 +319,19 @@ namespace RevitClasher
         /// </summary>
         /// <param name="ClashingElements"></param>
         /// <param name="doc"></param>
-        public static void OverrideInView( List<ClashItems>  ClashingElements, Document doc)
+        public static void OverrideInView(List<ClashItems> ClashingElements, Document doc)
         {
             var activeView = doc.ActiveView;
 
-                ResetView();
+            ResetView();
 
- 
+
 
             var c = new List<ElementId>();
-            
+
             OverrideGraphicSettings ogsA = new OverrideGraphicSettings();
             ogsA.SetProjectionLineColor(new Color(255, 0, 0));
-            foreach (var e in ClashingElements.Select(x=> x.ElementA).ToList())
+            foreach (var e in ClashingElements.Select(x => x.ElementA).ToList())
             {
                 activeView.SetElementOverrides(e.Id, ogsA);
                 c.Add(e.Id);
@@ -327,10 +346,11 @@ namespace RevitClasher
                 activeView.SetElementOverrides(e.Id, ogsB);
                 c.Add(e.Id);
             }
-            if (MainUserControl._Isolate) {
+            if (MainUserControl._Isolate)
+            {
                 activeView.IsolateElementsTemporary(c);
             }
-            
+
         }
 
 
@@ -364,7 +384,7 @@ namespace RevitClasher
 
                 BoundingBoxXYZ boundingBoxXYZ = elements.ElementA.get_BoundingBox(activeView);
                 activeView.CropBox = boundingBoxXYZ;
-                
+
             }
             else
             {
@@ -386,13 +406,13 @@ namespace RevitClasher
             }
 
 
-            
+
             if (activeView.IsTemporaryHideIsolateActive())
             {
                 TemporaryViewMode tempView = TemporaryViewMode.TemporaryHideIsolate;
                 activeView.DisableTemporaryViewMode(tempView);
             }
-            
+
         }
     }
 }
