@@ -25,15 +25,15 @@ namespace RevitClasher
 
             // Create a ribbon panel
             RibbonPanel m_projectPanel = application.CreateRibbonPanel(
-                "RevitClasher");
+                "ClashDetection");
             
             //Button
             PushButton pushButton = m_projectPanel.AddItem(new PushButtonData(
-                "RevitClasher", "Revit Clasher", ExecutingAssemblyPath,
+                "ClashDetection", "Clash Detection", ExecutingAssemblyPath,
                 "RevitClasher.Main")) as PushButton;
 
             //Add Help ToolTip 
-            pushButton.ToolTip = "RevitClasher";
+            pushButton.ToolTip = "Clash Detection";
 
             //Add long description 
             pushButton.LongDescription =
