@@ -303,22 +303,30 @@ namespace RevitClasher
             ResetView();
 
             OverrideGraphicSettings ogsA = new OverrideGraphicSettings();
-            ogsA.SetProjectionFillColor(new Color(255, 0, 0));
-            ogsA.SetProjectionLineColor(new Color(255, 0, 0));
-            foreach (var e in ClashingElements)
+
+            foreach (var item in ClashingElements)
             {
-                activeView.SetElementOverrides(e.Id, ogsA);
+                #if REVIT2020 || REVIT2019
+                OverrideElemtColor.Graphics20192020(doc, ref ogsA, 255, 0, 0);
+                #else
+                    OverrideElemtColor.Graphics20172018(doc, ref ogsA, 255, 0, 0);
+                #endif
+                activeView.SetElementOverrides(item.Id, ogsA);
             }
 
 
-
             OverrideGraphicSettings ogsB = new OverrideGraphicSettings();
-            ogsB.SetProjectionLineColor(new Color(0, 0, 255));
-            ogsB.SetProjectionFillColor(new Color(0, 0, 255));
 
-            foreach (var e in ClashingElements)
+            foreach (var item in ClashingElements)
             {
-                activeView.SetElementOverrides(e.Id, ogsB);
+
+                #if REVIT2020 || REVIT2019
+                OverrideElemtColor.Graphics20192020(doc, ref ogsB, 0, 0, 255);
+                #else
+                OverrideElemtColor.Graphics20172018(doc, ref ogsA, 0, 0, 255);
+                #endif
+
+                activeView.SetElementOverrides(item.Id, ogsA);
             }
 
         }
