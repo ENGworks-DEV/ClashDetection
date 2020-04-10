@@ -287,6 +287,7 @@ namespace RevitClasher
 
     class RevitTools
     {
+        public static ExternalCommandData commandData { get; set; }
         public static Document Doc { get; set; }
         public static Application App { get; set; }
         public static UIDocument Uidoc { get; internal set; }
@@ -364,11 +365,6 @@ namespace RevitClasher
                 activeView.SetElementOverrides(e.Id, ogsB);
                 c.Add(e.Id);
             }
-            if (MainUserControl._Isolate)
-            {
-                activeView.IsolateElementsTemporary(c);
-            }
-
         }
 
 
@@ -386,12 +382,6 @@ namespace RevitClasher
             listOfId.Add(elements.ElementB.Id);
             RevitTools.Uidoc.Selection.SetElementIds(listOfId);
             RevitTools.Uidoc.ShowElements(listOfId);
-            if (MainUserControl._Isolate)
-            {
-                activeView.IsolateElementsTemporary(listOfId);
-            }
-
-
         }
 
         public static void CreateBox(ClashItems elements)

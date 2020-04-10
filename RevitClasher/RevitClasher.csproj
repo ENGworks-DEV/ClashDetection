@@ -111,12 +111,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.cs" />
-    <Compile Include="Handler.cs" />
+    <Compile Include="Model\Handler.cs" />
     <Compile Include="Utils\CommonAssemblyInfo.cs" />
     <Compile Include="Views\MainUserControl.xaml.cs">
       <DependentUpon>MainUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="OverrideElemtColor.cs" />
+    <Compile Include="Model\OverrideElemtColor.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -130,14 +130,14 @@
     <Compile Include="Views\Resources.xaml.cs">
       <DependentUpon>Resources.xaml</DependentUpon>
     </Compile>
-    <Compile Include="RevitElement.cs" />
+    <Compile Include="Model\RevitElement.cs" />
     <Compile Include="Views\StyleableWindow\ControlDoubleClickBehavior.cs" />
     <Compile Include="Views\StyleableWindow\ShowSystemMenuBehavior.cs" />
     <Compile Include="Views\StyleableWindow\SystemMenuManager.cs" />
     <Compile Include="Views\StyleableWindow\WindowDragBehavior.cs" />
     <Compile Include="Views\StyleableWindow\WindowResizeBehavior.cs" />
-    <Compile Include="Tools.cs" />
-    <Compile Include="Main.cs" />
+    <Compile Include="Core\Tools.cs" />
+    <Compile Include="Model\Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -147,8 +147,8 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
-    <None Include="packages.config" />
+    <None Include="Config\app.config" />
+    <None Include="Config\packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

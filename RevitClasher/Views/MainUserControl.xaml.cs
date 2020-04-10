@@ -1,5 +1,6 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using Autodesk.Revit.UI.Selection;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -36,7 +37,6 @@ namespace RevitClasher
         public static ObservableCollection<ClashItems> elementsClashingB { get; set; }
         public static ObservableCollection<ClashItems> elementsClashingA { get; set; }
         public static bool _Reset = false;
-        internal static bool _Isolate = false;
         internal static bool _CropBox = false;
 
         public MainUserControl(ExternalEvent exEvent, ExternalEventClashDetection handler)
@@ -256,25 +256,37 @@ namespace RevitClasher
             return Items.Content.ToString().ToUpper().Contains(SearchB.Text.ToUpper());
         }
 
-        private void Clean_Click(object sender, RoutedEventArgs e)
+        //private void Clean_Click(object sender, RoutedEventArgs e)
+        //{
+        //    try
+        //    {
+        //        _Reset = true;
+        //        this.Results.Items.Clear();
+
+        //        m_ExEvent.Raise();
+
+        //    }
+        //    catch (Exception vEx)
+        //    {
+        //        MessageBox.Show(vEx.Message);
+        //    }
+        //}
+
+        private void IsolateElements_click(object sender, RoutedEventArgs e)
         {
-            try
+            Selection selection = RevitTools.Uidoc.Selection;
+            ICollection<ElementId> selectedIds = RevitTools.Uidoc.Selection.GetElementIds();
+            if (selectedIds.Count > 0)
             {
-                _Reset = true;
-                this.Results.Items.Clear();
-
-                m_ExEvent.Raise();
-
+                try
+                {
+                    RevitTools.Doc.ActiveView.IsolateElementsTemporary(selectedIds);
+                    RevitTools.Uidoc.RefreshActiveView();
+                }
+                catch (Exception vEx)
+                {
+                }
             }
-            catch (Exception vEx)
-            {
-                MessageBox.Show(vEx.Message);
-            }
-        }
-
-        private void IsolateElements_Checked(object sender, RoutedEventArgs e)
-        {
-            _Isolate = IsolateElements.IsChecked ?? false;
         }
 
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
