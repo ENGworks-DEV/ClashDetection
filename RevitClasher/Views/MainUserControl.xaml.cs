@@ -66,6 +66,14 @@ namespace RevitClasher
         {
             Results.Items.Add(MainUserControl.elementsClashingA.Last());
 
+            if (Results.Items.Count == 0)
+            {
+                TextBlockError.Visibility = System.Windows.Visibility.Visible;
+            }
+            else
+            {
+                TextBlockError.Visibility = System.Windows.Visibility.Hidden;
+            }
         }
 
 
@@ -175,8 +183,6 @@ namespace RevitClasher
                 int item = int.Parse(i);
                 BuiltInCategory myCatEnum = (BuiltInCategory)Enum.Parse(typeof(BuiltInCategory), cat.Values[item].Id.ToString());
                 FormTools.SelectedCategories.Add(new ElementCategoryFilter(myCatEnum));
-
-
             }
 
             //Get categories from select index
@@ -186,13 +192,10 @@ namespace RevitClasher
                 BuiltInCategory myCatEnum = (BuiltInCategory)Enum.Parse(typeof(BuiltInCategory), cat.Values[item].Id.ToString());
                 FormTools.SelectedHostCategories.Add(new ElementCategoryFilter(myCatEnum));
                 //Saving the local categories for a new run
-
-
             }
             m_ExEvent.Raise();
 
-
-
+          
         }
 
 
@@ -202,10 +205,8 @@ namespace RevitClasher
             try
             {
                 if (Results.SelectedItem != null)
-                {
-                    
+                { 
                     var vRVTElement = (ClashItems)Results.SelectedItem;
-
                     RevitTools.Focus(vRVTElement);
                 }
             }
@@ -215,46 +216,42 @@ namespace RevitClasher
             }
         }
 
-
-
-
         private void Reset_Click(object sender, RoutedEventArgs e)
         {
             RevitTools.ResetView();
         }
 
-        private void SearchA_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (SelectionAList.ItemsSource != null)
-            {
-                CollectionView view = CollectionViewSource.GetDefaultView(SelectionAList.ItemsSource) as CollectionView;
-                view.Filter = CategoryFilterA;
+        //private void SearchA_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    if (SelectionAList.ItemsSource != null)
+        //    {
+        //        CollectionView view = CollectionViewSource.GetDefaultView(SelectionAList.ItemsSource) as CollectionView;
+        //        view.Filter = CategoryFilterA;
 
-            }
+        //    }
 
-        }
-        private bool CategoryFilterA(object item)
-        {
+        //}
+        //private bool CategoryFilterA(object item)
+        //{
+        //    CheckBox Items = (CheckBox)item;
+        //    return Items.Content.ToString().ToUpper().Contains(SearchA.Text.ToUpper());
+        //}
 
+        //private void SearchB_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    if (SelectionBList.ItemsSource != null)
+        //    {
+        //        CollectionView view = CollectionViewSource.GetDefaultView(SelectionBList.ItemsSource) as CollectionView;
+        //        view.Filter = CategoryFilterB;
 
-            CheckBox Items = (CheckBox)item;
-            return Items.Content.ToString().ToUpper().Contains(SearchA.Text.ToUpper());
-        }
-        private void SearchB_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (SelectionBList.ItemsSource != null)
-            {
-                CollectionView view = CollectionViewSource.GetDefaultView(SelectionBList.ItemsSource) as CollectionView;
-                view.Filter = CategoryFilterB;
+        //    }
+        //}
 
-            }
-        }
-
-        private bool CategoryFilterB(object item)
-        {
-            CheckBox Items = (CheckBox)item;
-            return Items.Content.ToString().ToUpper().Contains(SearchB.Text.ToUpper());
-        }
+        //private bool CategoryFilterB(object item)
+        //{
+        //    CheckBox Items = (CheckBox)item;
+        //    return Items.Content.ToString().ToUpper().Contains(SearchB.Text.ToUpper());
+        //}
 
         //private void Clean_Click(object sender, RoutedEventArgs e)
         //{

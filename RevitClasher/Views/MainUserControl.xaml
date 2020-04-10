@@ -72,14 +72,14 @@
             <ListBox  Name="SelectionAList" 
                       HorizontalAlignment="Left" 
                       Height="116" 
-                      Margin="22,195,0,0"
+                      Margin="22,140,0,0"
                       VerticalAlignment="Top" 
                       Width="144">
             </ListBox>
             <ListBox  Name="SelectionBList" 
                       HorizontalAlignment="Left" 
                       Height="116" 
-                      Margin="200,195,0,0" 
+                      Margin="200,140,0,0" 
                       VerticalAlignment="Top" 
                       Width="143">
             </ListBox>
@@ -102,19 +102,20 @@
                        HorizontalAlignment="Left" 
                        DisplayMemberPath="Name" 
                        DataContext="{Binding elementsClashingA}" 
-                       Height="242" 
-                       Margin="22,363,0,0" 
+                       Height="330" 
+                       Margin="22,275,0,0" 
                        SelectionChanged="OnSelectedA" 
                        VerticalAlignment="Top" 
                        Width="321">
             </ListBox>
-            <Label Content="Results" 
+            <Label x:Name="TextBlockError"     
+                       Content="No Elements Found" 
                        HorizontalAlignment="Left" 
-                       Height="30" Margin="22,333,0,0" 
+                       Height="30" Margin="111,421,0,0" 
                        VerticalAlignment="Top"
                        FontFamily="Roboto light" 
                        FontSize="14"
-                       Width="63"
+                       Width="135"
                        Foreground="LightGray"/>
             <Label Content="Local Model " 
                        HorizontalAlignment="Left" 
@@ -122,24 +123,6 @@
                        Margin="26,100,0,0" 
                        VerticalAlignment="Top" 
                        Width="111"/>
-            <TextBox HorizontalAlignment="Left" 
-                       Height="22" 
-                       Margin="22,158,0,0" 
-                       TextWrapping="Wrap" 
-                       Name="SearchA" 
-                       Text="SearchA" 
-                       VerticalAlignment="Top" 
-                       Width="144" 
-                       TextChanged="SearchA_TextChanged"/>
-            <TextBox HorizontalAlignment="Left" 
-                       Height="22" 
-                       Margin="200,158,0,0" 
-                       TextWrapping="Wrap" 
-                       Name="SearchB" 
-                       Text="SearchB" 
-                       VerticalAlignment="Top" 
-                       Width="143" 
-                       TextChanged="SearchB_TextChanged"/>
             <Button x:Name="Reset" 
                        Style="{DynamicResource SecondaryButtonStyle}"
                        Content="Reset View" 
