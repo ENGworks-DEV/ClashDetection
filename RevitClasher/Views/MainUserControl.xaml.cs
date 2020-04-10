@@ -55,6 +55,13 @@ namespace RevitClasher
             this.Topmost = true;
         }
 
+        public string projectVersion = CommonAssemblyInfo.Number;
+        public string ProjectVersion
+        {
+            get { return projectVersion; }
+            set { projectVersion = value; }
+        }
+
         private void updateA(object sender, NotifyCollectionChangedEventArgs e)
         {
             Results.Items.Add(MainUserControl.elementsClashingA.Last());
@@ -273,6 +280,21 @@ namespace RevitClasher
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
             //_CropBox = CropBox.IsChecked ?? false;
+        }
+
+        private void Border_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            this.DragMove();
+        }
+
+        private void Title_Link(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://engworks.com/renumber-parts/");
+        }
+
+        private void Close_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
     }
 
