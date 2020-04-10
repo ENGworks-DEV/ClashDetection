@@ -1,26 +1,26 @@
 ﻿<Window x:Class="RevitClasher.MainUserControl"
-               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-               xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-               xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-               xmlns:sw="clr-namespace:WpfStyleableWindow.StyleableWindow"  
-               xmlns:local="clr-namespace:RevitClasher"
-               mc:Ignorable="d" 
-               d:DesignWidth="400" 
-               MinHeight="750" 
-               MinWidth="400" 
-               MaxHeight="750" 
-               MaxWidth="400"
-               ResizeMode="NoResize" 
-               WindowStartupLocation="CenterScreen"
-               Style="{DynamicResource CustomWindowStyle}" 
-               WindowStyle="None" Height="728">
+                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+                xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+                xmlns:sw="clr-namespace:WpfStyleableWindow.StyleableWindow"  
+                xmlns:local="clr-namespace:RevitClasher"
+                mc:Ignorable="d" 
+                d:DesignWidth="400" 
+                MinHeight="750" 
+                MinWidth="400" 
+                MaxHeight="750" 
+                MaxWidth="400"
+                ResizeMode="NoResize" 
+                WindowStartupLocation="CenterScreen"
+                Style="{DynamicResource CustomWindowStyle}" 
+                WindowStyle="None" Height="728">
     <Border Background="White" 
-               BorderBrush="Transparent" 
-               BorderThickness="1,1,1,1" 
-               CornerRadius="5,5,5,5" 
-               Margin="15,-20,15,13" 
-               MouseDown="Border_MouseDown">
+                BorderBrush="Transparent" 
+                BorderThickness="1,1,1,1" 
+                CornerRadius="5,5,5,5" 
+                Margin="15,-20,15,13" 
+                MouseDown="Border_MouseDown">
         <Border.Effect>
             <DropShadowEffect 
                 BlurRadius="20" 
@@ -32,10 +32,9 @@
         </Border.Effect>
 
         <Grid Margin="-1" 
-              Background="Transparent" 
-              Height="727" 
-              VerticalAlignment="Top">
-            
+                    Background="Transparent" 
+                    Height="727" 
+                    VerticalAlignment="Top">
             <!--Title Bar elements-->
             <Button Style="{DynamicResource CloseButtonStyle}" 
                     Name="TtitleButton" 
@@ -109,11 +108,14 @@
                        VerticalAlignment="Top" 
                        Width="321">
             </ListBox>
-            <Label Content="Clash Results - Click to select and zoom" 
+            <Label Content="Results" 
                        HorizontalAlignment="Left" 
-                       Height="24" Margin="22,338,0,0" 
-                       VerticalAlignment="Top" 
-                       Width="239"/>
+                       Height="30" Margin="22,333,0,0" 
+                       VerticalAlignment="Top"
+                       FontFamily="Roboto light" 
+                       FontSize="14"
+                       Width="63"
+                       Foreground="LightGray"/>
             <Label Content="Local Model " 
                        HorizontalAlignment="Left" 
                        Height="24" 
@@ -138,15 +140,6 @@
                        VerticalAlignment="Top" 
                        Width="143" 
                        TextChanged="SearchB_TextChanged"/>
-            <CheckBox Name="IsolateElements" 
-                       Content="Isolate on click" 
-                       HorizontalAlignment="Left" 
-                       Height="17" 
-                       Margin="26,321,0,0"  
-                       VerticalAlignment="Top" 
-                       Width="140"  
-                       Checked="IsolateElements_Checked" 
-                       Unchecked="IsolateElements_Checked"/>
             <Button x:Name="Reset" 
                        Style="{DynamicResource SecondaryButtonStyle}"
                        Content="Reset View" 
@@ -158,13 +151,13 @@
                        Click="Reset_Click" />
             <Button x:Name="Clean"
                        Style="{DynamicResource SecondaryButtonStyle}"
-                       Content="Clean Results" 
+                       Content="Isolate Selection" 
                        HorizontalAlignment="Left" 
                        Height="30" 
                        Margin="190,624,0,0" 
                        VerticalAlignment="Top" 
                        Width="153" 
-                       Click="Clean_Click" />
+                       Click="IsolateElements_click" />
         </Grid>
     </Border>
 
