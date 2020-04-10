@@ -30,7 +30,7 @@
 
         </ListBox>
         <ComboBox  Name="ListOfLinks" HorizontalAlignment="Left" Height="22" Margin="206,10,0,0" VerticalAlignment="Top" Width="182"/>
-        <Button x:Name="Run" Content="Execute" HorizontalAlignment="Left" Height="24" Margin="206,326,0,0" VerticalAlignment="Top" Width="180" Click="Run_Click"/>
+        <Button x:Name="Run" Content="Execute" HorizontalAlignment="Left" Height="37" Margin="10,668,0,0" VerticalAlignment="Top" Width="378" Click="Run_Click"/>
 
 
 
