@@ -41,6 +41,8 @@ namespace RevitClasher
 
         public MainUserControl(ExternalEvent exEvent, ExternalEventClashDetection handler)
         {
+            
+
             InitializeComponent();
             m_ExEvent = exEvent;
             m_Handler = handler;
@@ -53,6 +55,8 @@ namespace RevitClasher
             elementsClashingA.CollectionChanged += updateA;
 
             this.Topmost = true;
+
+            ModelName.Content = RevitTools.Doc.Title.ToString();
         }
 
         public string projectVersion = CommonAssemblyInfo.Number;
@@ -177,6 +181,7 @@ namespace RevitClasher
             //Categories
             var cat = FormTools.ListOfCategories(RevitTools.Doc);
 
+            
             //Get categories from select index
             foreach (var i in Properties.Settings.Default.SelectionB)
             {
@@ -195,7 +200,7 @@ namespace RevitClasher
             }
             m_ExEvent.Raise();
 
-          
+
         }
 
 
@@ -205,7 +210,7 @@ namespace RevitClasher
             try
             {
                 if (Results.SelectedItem != null)
-                { 
+                {
                     var vRVTElement = (ClashItems)Results.SelectedItem;
                     RevitTools.Focus(vRVTElement);
                 }
@@ -221,53 +226,39 @@ namespace RevitClasher
             RevitTools.ResetView();
         }
 
-        //private void SearchA_TextChanged(object sender, TextChangedEventArgs e)
-        //{
-        //    if (SelectionAList.ItemsSource != null)
-        //    {
-        //        CollectionView view = CollectionViewSource.GetDefaultView(SelectionAList.ItemsSource) as CollectionView;
-        //        view.Filter = CategoryFilterA;
+        private void SearchA_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (SelectionAList.ItemsSource != null)
+            {
+                CollectionView view = CollectionViewSource.GetDefaultView(SelectionAList.ItemsSource) as CollectionView;
+                view.Filter = CategoryFilterA;
 
-        //    }
+            }
 
-        //}
-        //private bool CategoryFilterA(object item)
-        //{
-        //    CheckBox Items = (CheckBox)item;
-        //    return Items.Content.ToString().ToUpper().Contains(SearchA.Text.ToUpper());
-        //}
+        }
+        private bool CategoryFilterA(object item)
+        {
+            CheckBox Items = (CheckBox)item;
+            return Items.Content.ToString().ToUpper().Contains(SearchA.Text.ToUpper());
+        }
 
-        //private void SearchB_TextChanged(object sender, TextChangedEventArgs e)
-        //{
-        //    if (SelectionBList.ItemsSource != null)
-        //    {
-        //        CollectionView view = CollectionViewSource.GetDefaultView(SelectionBList.ItemsSource) as CollectionView;
-        //        view.Filter = CategoryFilterB;
+        private void SearchB_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (SelectionBList.ItemsSource != null)
+            {
+                CollectionView view = CollectionViewSource.GetDefaultView(SelectionBList.ItemsSource) as CollectionView;
+                view.Filter = CategoryFilterB;
 
-        //    }
-        //}
+            }
+        }
 
-        //private bool CategoryFilterB(object item)
-        //{
-        //    CheckBox Items = (CheckBox)item;
-        //    return Items.Content.ToString().ToUpper().Contains(SearchB.Text.ToUpper());
-        //}
+        private bool CategoryFilterB(object item)
+        {
+            CheckBox Items = (CheckBox)item;
+            return Items.Content.ToString().ToUpper().Contains(SearchB.Text.ToUpper());
+        }
 
-        //private void Clean_Click(object sender, RoutedEventArgs e)
-        //{
-        //    try
-        //    {
-        //        _Reset = true;
-        //        this.Results.Items.Clear();
 
-        //        m_ExEvent.Raise();
-
-        //    }
-        //    catch (Exception vEx)
-        //    {
-        //        MessageBox.Show(vEx.Message);
-        //    }
-        //}
 
         private void IsolateElements_click(object sender, RoutedEventArgs e)
         {
@@ -304,6 +295,11 @@ namespace RevitClasher
         private void Close_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+
+        private void SelectionAList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
         }
     }
 
