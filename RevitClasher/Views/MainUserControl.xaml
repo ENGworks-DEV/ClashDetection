@@ -69,24 +69,27 @@
                     RenderTransformOrigin="0.776,0.792" />
 
             <!--Body elements-->
-            <ListBox  Name="SelectionAList" 
+
+            <ListBox  Name="SelectionAList"
+                      Style="{DynamicResource  ListBoxStyleTop}"
                       HorizontalAlignment="Left" 
-                      Height="116" 
-                      Margin="22,140,0,0"
+                      Height="95" 
+                      Margin="22,161,0,0"
                       VerticalAlignment="Top" 
-                      Width="144">
+                      Width="144" SelectionChanged="SelectionAList_SelectionChanged">
             </ListBox>
-            <ListBox  Name="SelectionBList" 
+            <ListBox  Name="SelectionBList"
+                      Style="{DynamicResource  ListBoxStyleTop}"
                       HorizontalAlignment="Left" 
-                      Height="116" 
-                      Margin="200,140,0,0" 
-                      VerticalAlignment="Top" 
+                      Height="95" 
+                      Margin="200,161,0,0" 
+                      VerticalAlignment="Top"   
                       Width="143">
             </ListBox>
             <ComboBox  Name="ListOfLinks"
                        ItemContainerStyle="{DynamicResource ComboItemStyle}"
                        HorizontalAlignment="Left" 
-                       Height="22" Margin="200,100,0,0" 
+                       Height="27" Margin="200,87,0,0" 
                        VerticalAlignment="Top" Width="143" 
                        RenderTransformOrigin="0.615,1.955"/>
             <Button x:Name="Run"
@@ -98,7 +101,8 @@
                        VerticalAlignment="Top" 
                        Width="321" 
                        Click="Run_Click"/>
-            <ListBox  Name="Results" 
+            <ListBox  Name="Results"
+                       Style="{DynamicResource  ListBoxStyle}"
                        HorizontalAlignment="Left" 
                        DisplayMemberPath="Name" 
                        DataContext="{Binding elementsClashingA}" 
@@ -115,14 +119,20 @@
                        VerticalAlignment="Top"
                        FontFamily="Roboto light" 
                        FontSize="14"
-                       Width="135"
+                       Width="135" 
                        Foreground="LightGray"/>
-            <Label Content="Local Model " 
+            <Label     x:Name="ModelName"
+                       Content="Local Model " 
+                       FontFamily="Roboto"
+                       Foreground="LightGray"
+                       FontSize="14"
                        HorizontalAlignment="Left" 
-                       Height="24" 
-                       Margin="26,100,0,0" 
-                       VerticalAlignment="Top" 
-                       Width="111"/>
+                       Height="26" 
+                       Margin="26,90,0,0" 
+                       VerticalAlignment="Top"
+                       HorizontalContentAlignment="Left" 
+                       VerticalContentAlignment="Top"
+                       Width="140"/>
             <Button x:Name="Reset" 
                        Style="{DynamicResource SecondaryButtonStyle}"
                        Content="Reset View" 
@@ -141,6 +151,30 @@
                        VerticalAlignment="Top" 
                        Width="153" 
                        Click="IsolateElements_click" />
+
+            <TextBox HorizontalAlignment="Left" 
+                       Style="{DynamicResource MainTextBox}"
+                       Height="27"
+                       Margin="22,136,0,0" 
+                       TextWrapping="Wrap"
+                       FontSize="14"
+                       Name="SearchA" 
+                       Tag="Categories A"
+                       HorizontalContentAlignment="Left" 
+                       VerticalAlignment="Top"
+                       Width="144" 
+                       TextChanged="SearchA_TextChanged"/>
+            <TextBox HorizontalAlignment="Left"
+                        Style="{DynamicResource MainTextBox}"
+                       Height="27" 
+                       Margin="200,136,0,0" 
+                       TextWrapping="Wrap" 
+                       Name="SearchB" 
+                     FontSize="14"
+                       Tag="Categories B" 
+                       VerticalAlignment="Top" 
+                       Width="143" 
+                       TextChanged="SearchB_TextChanged"/>
         </Grid>
     </Border>
 
