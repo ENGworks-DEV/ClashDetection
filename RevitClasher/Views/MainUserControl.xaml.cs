@@ -1,5 +1,6 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using Autodesk.Revit.UI.Selection;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -36,11 +37,12 @@ namespace RevitClasher
         public static ObservableCollection<ClashItems> elementsClashingB { get; set; }
         public static ObservableCollection<ClashItems> elementsClashingA { get; set; }
         public static bool _Reset = false;
-        internal static bool _Isolate = false;
         internal static bool _CropBox = false;
 
         public MainUserControl(ExternalEvent exEvent, ExternalEventClashDetection handler)
         {
+            
+
             InitializeComponent();
             m_ExEvent = exEvent;
             m_Handler = handler;
@@ -53,12 +55,29 @@ namespace RevitClasher
             elementsClashingA.CollectionChanged += updateA;
 
             this.Topmost = true;
+
+            ModelName.Content = RevitTools.Doc.Title.ToString();
+        }
+
+        public string projectVersion = CommonAssemblyInfo.Number;
+        public string ProjectVersion
+        {
+            get { return projectVersion; }
+            set { projectVersion = value; }
         }
 
         private void updateA(object sender, NotifyCollectionChangedEventArgs e)
         {
             Results.Items.Add(MainUserControl.elementsClashingA.Last());
 
+            if (Results.Items.Count == 0)
+            {
+                TextBlockError.Visibility = System.Windows.Visibility.Visible;
+            }
+            else
+            {
+                TextBlockError.Visibility = System.Windows.Visibility.Hidden;
+            }
         }
 
 
@@ -162,14 +181,13 @@ namespace RevitClasher
             //Categories
             var cat = FormTools.ListOfCategories(RevitTools.Doc);
 
+            
             //Get categories from select index
             foreach (var i in Properties.Settings.Default.SelectionB)
             {
                 int item = int.Parse(i);
                 BuiltInCategory myCatEnum = (BuiltInCategory)Enum.Parse(typeof(BuiltInCategory), cat.Values[item].Id.ToString());
                 FormTools.SelectedCategories.Add(new ElementCategoryFilter(myCatEnum));
-
-
             }
 
             //Get categories from select index
@@ -179,11 +197,8 @@ namespace RevitClasher
                 BuiltInCategory myCatEnum = (BuiltInCategory)Enum.Parse(typeof(BuiltInCategory), cat.Values[item].Id.ToString());
                 FormTools.SelectedHostCategories.Add(new ElementCategoryFilter(myCatEnum));
                 //Saving the local categories for a new run
-
-
             }
             m_ExEvent.Raise();
-
 
 
         }
@@ -196,9 +211,7 @@ namespace RevitClasher
             {
                 if (Results.SelectedItem != null)
                 {
-                    
                     var vRVTElement = (ClashItems)Results.SelectedItem;
-
                     RevitTools.Focus(vRVTElement);
                 }
             }
@@ -207,9 +220,6 @@ namespace RevitClasher
 
             }
         }
-
-
-
 
         private void Reset_Click(object sender, RoutedEventArgs e)
         {
@@ -228,11 +238,10 @@ namespace RevitClasher
         }
         private bool CategoryFilterA(object item)
         {
-
-
             CheckBox Items = (CheckBox)item;
             return Items.Content.ToString().ToUpper().Contains(SearchA.Text.ToUpper());
         }
+
         private void SearchB_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (SelectionBList.ItemsSource != null)
@@ -249,30 +258,48 @@ namespace RevitClasher
             return Items.Content.ToString().ToUpper().Contains(SearchB.Text.ToUpper());
         }
 
-        private void Clean_Click(object sender, RoutedEventArgs e)
+
+
+        private void IsolateElements_click(object sender, RoutedEventArgs e)
         {
-            try
+            Selection selection = RevitTools.Uidoc.Selection;
+            ICollection<ElementId> selectedIds = RevitTools.Uidoc.Selection.GetElementIds();
+            if (selectedIds.Count > 0)
             {
-                _Reset = true;
-                this.Results.Items.Clear();
-
-                m_ExEvent.Raise();
-
+                try
+                {
+                    RevitTools.Doc.ActiveView.IsolateElementsTemporary(selectedIds);
+                    RevitTools.Uidoc.RefreshActiveView();
+                }
+                catch (Exception vEx)
+                {
+                }
             }
-            catch (Exception vEx)
-            {
-                MessageBox.Show(vEx.Message);
-            }
-        }
-
-        private void IsolateElements_Checked(object sender, RoutedEventArgs e)
-        {
-            _Isolate = IsolateElements.IsChecked ?? false;
         }
 
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
             //_CropBox = CropBox.IsChecked ?? false;
+        }
+
+        private void Border_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            this.DragMove();
+        }
+
+        private void Title_Link(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://engworks.com/renumber-parts/");
+        }
+
+        private void Close_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void SelectionAList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
         }
     }
 

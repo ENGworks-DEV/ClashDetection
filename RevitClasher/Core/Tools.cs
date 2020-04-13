@@ -287,6 +287,7 @@ namespace RevitClasher
 
     class RevitTools
     {
+        public static ExternalCommandData commandData { get; set; }
         public static Document Doc { get; set; }
         public static Application App { get; set; }
         public static UIDocument Uidoc { get; internal set; }
@@ -303,22 +304,30 @@ namespace RevitClasher
             ResetView();
 
             OverrideGraphicSettings ogsA = new OverrideGraphicSettings();
-            ogsA.SetProjectionFillColor(new Color(255, 0, 0));
-            ogsA.SetProjectionLineColor(new Color(255, 0, 0));
-            foreach (var e in ClashingElements)
+
+            foreach (var item in ClashingElements)
             {
-                activeView.SetElementOverrides(e.Id, ogsA);
+                #if REVIT2020 || REVIT2019
+                OverrideElemtColor.Graphics20192020(doc, ref ogsA, 255, 0, 0);
+                #else
+                    OverrideElemtColor.Graphics20172018(doc, ref ogsA, 255, 0, 0);
+                #endif
+                activeView.SetElementOverrides(item.Id, ogsA);
             }
 
 
-
             OverrideGraphicSettings ogsB = new OverrideGraphicSettings();
-            ogsB.SetProjectionLineColor(new Color(0, 0, 255));
-            ogsB.SetProjectionFillColor(new Color(0, 0, 255));
 
-            foreach (var e in ClashingElements)
+            foreach (var item in ClashingElements)
             {
-                activeView.SetElementOverrides(e.Id, ogsB);
+
+                #if REVIT2020 || REVIT2019
+                OverrideElemtColor.Graphics20192020(doc, ref ogsB, 0, 0, 255);
+                #else
+                OverrideElemtColor.Graphics20172018(doc, ref ogsA, 0, 0, 255);
+                #endif
+
+                activeView.SetElementOverrides(item.Id, ogsA);
             }
 
         }
@@ -356,11 +365,6 @@ namespace RevitClasher
                 activeView.SetElementOverrides(e.Id, ogsB);
                 c.Add(e.Id);
             }
-            if (MainUserControl._Isolate)
-            {
-                activeView.IsolateElementsTemporary(c);
-            }
-
         }
 
 
@@ -378,12 +382,6 @@ namespace RevitClasher
             listOfId.Add(elements.ElementB.Id);
             RevitTools.Uidoc.Selection.SetElementIds(listOfId);
             RevitTools.Uidoc.ShowElements(listOfId);
-            if (MainUserControl._Isolate)
-            {
-                activeView.IsolateElementsTemporary(listOfId);
-            }
-
-
         }
 
         public static void CreateBox(ClashItems elements)

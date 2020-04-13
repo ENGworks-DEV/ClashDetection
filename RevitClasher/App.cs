@@ -41,7 +41,7 @@ namespace RevitClasher
 
             // Set the large image shown on button.
             pushButton.LargeImage = PngImageSource(
-                "RevitClasher.Resources.RevitClasherLogo.png");
+                "RevitClasher.Resources.ClasherIcon.png");
 
             // Get the location of the solution DLL
             string path = System.IO.Path.GetDirectoryName(
