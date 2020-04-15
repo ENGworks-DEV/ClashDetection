@@ -2,6 +2,7 @@
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
 using Newtonsoft.Json;
+using RevitClasher.Views.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -166,6 +167,29 @@ namespace RevitClasher
         private void Run_Click(object sender, RoutedEventArgs e)
         {
             this.Results.Items.Clear();
+            StringCollection selectionACollection = Properties.Settings.Default.SelectionA;
+            StringCollection selectionBCollection = Properties.Settings.Default.SelectionB;
+            String validationMessage = string.Empty;
+            bool validationFlag = false;
+            
+            // Validation of elements selected
+            if(selectionACollection.Count == 0 || selectionBCollection.Count == 0)
+            {
+                validationFlag = true;
+                validationMessage = "Both categories must have elements selected to check for clashes";
+            } 
+
+            // If validationFlag is true. The validation dialog is showed.
+            if(validationFlag)
+            {
+                ValidationDialog mValidationDialog = new ValidationDialog(validationMessage);
+                mValidationDialog.Owner = this;
+                bool closedDialog = (bool)mValidationDialog.ShowDialog();
+                if(closedDialog)
+                {
+                    return;
+                }
+            }
 
             _Reset = false;
             //Save Selection
