@@ -2,6 +2,8 @@
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
 using Newtonsoft.Json;
+using RevitClasher.Handlers;
+using RevitClasher.Views.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -38,14 +40,26 @@ namespace RevitClasher
         public static ObservableCollection<ClashItems> elementsClashingA { get; set; }
         public static bool _Reset = false;
         internal static bool _CropBox = false;
+        private ExternalEvent _externalCleanEvent;
+        private CleanViewHandler _cleanViewHandler;
 
-        public MainUserControl(ExternalEvent exEvent, ExternalEventClashDetection handler)
-        {
+        /// <summary>
+        /// Constructs a instance of the main view for the revit addIn
+        /// </summary>
+        /// <param name="exEvent">External event for clashing process</param>
+        /// <param name="handler">Handler for clashing process</param>
+        /// <param name="externalCleanEvent">External event for cleaning view process</param>
+        public MainUserControl(
+            ExternalEvent exEvent,
+            ExternalEventClashDetection handler,
+            ExternalEvent externalCleanEvent
+        ){
             
 
             InitializeComponent();
             m_ExEvent = exEvent;
             m_Handler = handler;
+            _externalCleanEvent = externalCleanEvent;
             FillForm();
 
             this.DataContext = this;
@@ -223,7 +237,10 @@ namespace RevitClasher
 
         private void Reset_Click(object sender, RoutedEventArgs e)
         {
-            RevitTools.ResetView();
+            // This runs "Execute" method on the handler class @see CleanViewHander class on "Handlers" folder
+            // For more information of how this handlers works... 
+            // go to: https://thebuildingcoder.typepad.com/blog/2015/12/external-event-and-10-year-forum-anniversary.html
+            _externalCleanEvent.Raise();
         }
 
         private void SearchA_TextChanged(object sender, TextChangedEventArgs e)

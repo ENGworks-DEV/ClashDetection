@@ -9,6 +9,7 @@ using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using System.Resources;
+using RevitClasher.Handlers;
 #endregion
 
 namespace RevitClasher
@@ -105,9 +106,14 @@ namespace RevitClasher
                 // External Event for the dialog to use (to post requests)
                 ExternalEvent exEvent = ExternalEvent.Create(handler);
 
+                // External execution handler to provide the needed context by revit to perform modifications on active document
+                CleanViewHandler cleanViewHandler = new CleanViewHandler();
+                // External event used for clean elements on the active view
+                ExternalEvent externalCleanEvent = ExternalEvent.Create(cleanViewHandler);
+
                 // We give the objects to the new dialog;
                 // The dialog becomes the owner responsible for disposing them, eventually.
-                m_MyForm = new MainUserControl(exEvent, handler);
+                m_MyForm = new MainUserControl(exEvent, handler, externalCleanEvent);
                 m_MyForm.Closed += MyFormClosed;
                 m_MyForm.Show();
             }
