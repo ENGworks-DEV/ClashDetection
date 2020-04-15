@@ -169,7 +169,7 @@ namespace RevitClasher
             this.Results.Items.Clear();
             StringCollection selectionACollection = Properties.Settings.Default.SelectionA;
             StringCollection selectionBCollection = Properties.Settings.Default.SelectionB;
-            String validationMessage = string.Empty;
+            string validationMessage = string.Empty;
             bool validationFlag = false;
             
             // Validation of elements selected
@@ -182,13 +182,7 @@ namespace RevitClasher
             // If validationFlag is true. The validation dialog is showed.
             if(validationFlag)
             {
-                ValidationDialog mValidationDialog = new ValidationDialog(validationMessage);
-                mValidationDialog.Owner = this;
-                bool closedDialog = (bool)mValidationDialog.ShowDialog();
-                if(closedDialog)
-                {
-                    return;
-                }
+                TaskDialog.Show("Clash Detection", validationMessage, TaskDialogCommonButtons.Ok);
             }
 
             _Reset = false;
