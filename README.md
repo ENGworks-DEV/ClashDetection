@@ -4,9 +4,6 @@
 
 This is a Revit add-in that helps you to find all the clashes within Revit
 
-## Examples
-
-
 ## Revit tested versions
 
 * Revit 2019
