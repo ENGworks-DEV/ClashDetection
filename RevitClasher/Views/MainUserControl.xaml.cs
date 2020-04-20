@@ -3,7 +3,6 @@ using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
 using Newtonsoft.Json;
 using RevitClasher.Handlers;
-using RevitClasher.Views.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
