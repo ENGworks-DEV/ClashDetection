@@ -111,6 +111,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.cs" />
+    <Compile Include="Handlers\CleanViewHandler.cs" />
     <Compile Include="Model\Handler.cs" />
     <Compile Include="Utils\CommonAssemblyInfo.cs" />
     <Compile Include="Views\MainUserControl.xaml.cs">
@@ -169,8 +170,12 @@
     <EmbeddedResource Include="Resources\ClasherIcon.png" />
     <Content Include="Resources\EngLogo-01.png" />
     <Resource Include="Resources\Icon.png" />
-    <EmbeddedResource Include="Resources\RevitClasherLogo.png" />
-    <Content Include="Resources\WarningLogo.png" />
+    <EmbeddedResource Include="Resources\RevitClasherLogo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\WarningLogo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\winforms.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
