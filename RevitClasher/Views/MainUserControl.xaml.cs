@@ -3,6 +3,7 @@ using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
 using Newtonsoft.Json;
 using RevitClasher.Handlers;
+using RevitClasher.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -32,13 +33,13 @@ namespace RevitClasher
     {
 
         private ExternalEvent m_ExEvent;
-        private ExternalEventClashDetection m_Handler;
+        private ClashDetectionHandler m_Handler;
         public static bool _wasExecuted;
         public static MainUserControl thisForm;
         public static ObservableCollection<ClashItems> elementsClashingB { get; set; }
         public static ObservableCollection<ClashItems> elementsClashingA { get; set; }
         public static bool _Reset = false;
-        internal static bool _CropBox = false;
+        internal static bool _CropBox = true;
         private ExternalEvent _externalCleanEvent;
         private CleanViewHandler _cleanViewHandler;
 
@@ -50,7 +51,7 @@ namespace RevitClasher
         /// <param name="externalCleanEvent">External event for cleaning view process</param>
         public MainUserControl(
             ExternalEvent exEvent,
-            ExternalEventClashDetection handler,
+            ClashDetectionHandler handler,
             ExternalEvent externalCleanEvent
         ){
             
@@ -78,6 +79,8 @@ namespace RevitClasher
             get { return projectVersion; }
             set { projectVersion = value; }
         }
+
+        public BoundingBoxXYZ ScopeBox { get; private set; }
 
         private void updateA(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -179,6 +182,7 @@ namespace RevitClasher
         private void Run_Click(object sender, RoutedEventArgs e)
         {
             this.Results.Items.Clear();
+            RevitTools.CropBox = RevitTools.GetCropBox();
             StringCollection selectionACollection = Properties.Settings.Default.SelectionA;
             StringCollection selectionBCollection = Properties.Settings.Default.SelectionB;
             string validationMessage = string.Empty;
@@ -303,22 +307,25 @@ namespace RevitClasher
 
         private void IsolateElements_click(object sender, RoutedEventArgs e)
         {
-            Selection selection = RevitTools.Uidoc.Selection;
-            ICollection<ElementId> selectedIds = RevitTools.Uidoc.Selection.GetElementIds();
-            if (selectedIds.Count > 0)
+
+            try
             {
-                try
+                if (Results.SelectedItem != null)
                 {
-                    RevitTools.Doc.ActiveView.IsolateElementsTemporary(selectedIds);
-                    RevitTools.Uidoc.ShowElements(selectedIds);
-                    RevitTools.Uidoc.RefreshActiveView();
-                    
-                }
-                catch (Exception vEx)
-                {
+                    var vRVTElement = (ClashItems)Results.SelectedItem;
+                    RevitTools.Focus(vRVTElement);
+                    RevitTools.IsolateSelectionTemporary(vRVTElement);
                 }
             }
+            catch
+            {
+
+            }
+
+            
         }
+
+
 
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
@@ -332,7 +339,7 @@ namespace RevitClasher
 
         private void Title_Link(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://engworks.com/renumber-parts/");
+            System.Diagnostics.Process.Start("https://engworks.com/addins/");
         }
 
         private void Close_Click(object sender, RoutedEventArgs e)

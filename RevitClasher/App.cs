@@ -101,7 +101,7 @@ namespace RevitClasher
             if (m_MyForm == null)
             {
                 // A new handler to handle request posting by the dialog
-                ExternalEventClashDetection handler = new ExternalEventClashDetection();
+                ClashDetectionHandler handler = new ClashDetectionHandler();
 
                 // External Event for the dialog to use (to post requests)
                 ExternalEvent exEvent = ExternalEvent.Create(handler);

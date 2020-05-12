@@ -8,7 +8,7 @@ using Autodesk.Revit.UI;
 
 namespace RevitClasher
 {
-    public class ExternalEventClashDetection : IExternalEventHandler
+    public class ClashDetectionHandler : IExternalEventHandler
     {
         public void Execute(UIApplication app)
         {
