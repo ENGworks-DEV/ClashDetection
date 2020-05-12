@@ -35,6 +35,9 @@
                     Background="Transparent" 
                     Height="727" 
                     VerticalAlignment="Top">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
             <!--Title Bar elements-->
             <Button Style="{DynamicResource CloseButtonStyle}" 
                     Name="TtitleButton" 
@@ -74,27 +77,28 @@
             <ListBox  Name="SelectionAList"
                       Style="{DynamicResource  ListBoxStyleTop}"
                       HorizontalAlignment="Left" 
-                      Height="95" 
-                      Margin="10,150,0,0"
+                      Height="120" 
+                      Margin="10,132,0,0"
                       VerticalAlignment="Top" 
                       Width="182" SelectionChanged="SelectionAList_SelectionChanged">
             </ListBox>
             <ListBox  Name="SelectionBList"
                       Style="{DynamicResource  ListBoxStyleTop}"
                       HorizontalAlignment="Left" 
-                      Margin="220,149,0,481"   
+                      Margin="220,131,0,476"  
+                      Height="120" 
                       Width="190"/>
             <ComboBox  Name="ListOfLinks"
                        ItemContainerStyle="{DynamicResource ComboItemStyle}"
                        HorizontalAlignment="Left" 
-                       Height="27" Margin="220,76,0,0" 
+                       Height="27" Margin="220,58,0,0" 
                        VerticalAlignment="Top" Width="190" 
                        RenderTransformOrigin="0.615,1.955"/>
             <Button x:Name="Run"
                        Style="{DynamicResource MainButtonStyle}"
                        Content="Execute" 
                        HorizontalAlignment="Left" 
-                       Height="37" 
+                       Height="36" 
                        Margin="10,668,0,0" 
                        VerticalAlignment="Top" 
                        Width="400" 
@@ -108,8 +112,7 @@
                        Margin="10,275,0,0" 
                        SelectionChanged="OnSelectedA" 
                        VerticalAlignment="Top" 
-                       Width="400">
-            </ListBox>
+                       Width="400"/>
             <Label x:Name="TextBlockError"     
                        Content="No Elements Found" 
                        HorizontalAlignment="Left" 
@@ -126,11 +129,11 @@
                        FontSize="14"
                        HorizontalAlignment="Left" 
                        Height="26" 
-                       Margin="10,77,0,0" 
+                       Margin="10,59,0,0" 
                        VerticalAlignment="Top"
                        HorizontalContentAlignment="Left" 
                        VerticalContentAlignment="Top"
-                       Width="140"/>
+                       Width="182"/>
             <Button x:Name="Reset" 
                        Style="{DynamicResource SecondaryButtonStyle}"
                        Content="Reset View" 
@@ -153,7 +156,7 @@
             <TextBox HorizontalAlignment="Left" 
                        Style="{DynamicResource MainTextBox}"
                        Height="27"
-                       Margin="10,125,0,0" 
+                       Margin="10,107,0,0" 
                        TextWrapping="Wrap"
                        FontSize="14"
                        Name="SearchA" 
@@ -165,7 +168,7 @@
             <TextBox HorizontalAlignment="Left"
                         Style="{DynamicResource MainTextBox}"
                        Height="27" 
-                       Margin="220,125,0,0" 
+                       Margin="220,107,0,0" 
                        TextWrapping="Wrap" 
                        Name="SearchB" 
                      FontSize="14"

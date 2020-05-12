@@ -184,17 +184,25 @@ namespace RevitClasher
             string validationMessage = string.Empty;
             bool validationFlag = false;
             
+            
             // Validation of elements selected
             if(selectionACollection.Count == 0 || selectionBCollection.Count == 0)
             {
                 validationFlag = true;
                 validationMessage = "Both categories must have elements selected to check for clashes";
-            } 
+            }
+
+            if (ListOfLinks.SelectedItem == null)
+            {
+                validationFlag = true;
+                validationMessage = "Select a document to do the clash detection";
+            }
 
             // If validationFlag is true. The validation dialog is showed.
             if(validationFlag)
             {
                 TaskDialog.Show("Clash Detection", validationMessage, TaskDialogCommonButtons.Ok);
+                    return;
             }
 
             _Reset = false;
@@ -302,7 +310,9 @@ namespace RevitClasher
                 try
                 {
                     RevitTools.Doc.ActiveView.IsolateElementsTemporary(selectedIds);
+                    RevitTools.Uidoc.ShowElements(selectedIds);
                     RevitTools.Uidoc.RefreshActiveView();
+                    
                 }
                 catch (Exception vEx)
                 {
