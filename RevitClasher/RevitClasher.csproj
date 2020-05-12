@@ -117,12 +117,13 @@
   <ItemGroup>
     <Compile Include="App.cs" />
     <Compile Include="Handlers\CleanViewHandler.cs" />
-    <Compile Include="Model\Handler.cs" />
+    <Compile Include="Model\ClashItems.cs" />
+    <Compile Include="Handlers\ClashDetectionHandler.cs" />
     <Compile Include="Utils\CommonAssemblyInfo.cs" />
     <Compile Include="Views\MainUserControl.xaml.cs">
       <DependentUpon>MainUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Model\OverrideElemtColor.cs" />
+    <Compile Include="Core\OverrideElementColor.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -143,7 +144,7 @@
     <Compile Include="Views\StyleableWindow\WindowDragBehavior.cs" />
     <Compile Include="Views\StyleableWindow\WindowResizeBehavior.cs" />
     <Compile Include="Core\Tools.cs" />
-    <Compile Include="Model\Main.cs" />
+    <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

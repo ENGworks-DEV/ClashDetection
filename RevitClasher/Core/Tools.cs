@@ -1,6 +1,7 @@
 ﻿using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using RevitClasher.Model;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -22,8 +23,12 @@ namespace RevitClasher
             {
 
                 var clashing = Clash.clashingElements(RevitTools.Doc, RevitTools.App);
-                foreach (var item in clashing)
+                string format = new string('0', clashing.Count.ToString().Length);
+                for (int i = 0; i < clashing.Count; i++)
                 {
+                    
+                    var item = clashing[i];
+                    item.Number =(i).ToString(format); ;
                     MainUserControl.elementsClashingA.Add(item);
                 }
 
@@ -49,8 +54,7 @@ namespace RevitClasher
         }
         public static List<ClashItems> clashingElements(Document doc, Application app, Document link = null)
         {
-            //TODO : Create a separate addin to save configuration
-
+ 
             var linkedElements = new List<Element>();
             var localElements = new List<Element>();
             var ClashingElementsA = new List<Element>();
@@ -77,7 +81,7 @@ namespace RevitClasher
                 GeometryElement geom = elementB.get_Geometry(opt);
                 GeometryElement geomTranslated = geom;
                 // Get bounding box from transformed geometry
-                // By default use element geoemtry to extract bbox
+                // By default use element geometry to extract bbox
                 var bbox = geom.GetBoundingBox();
                 if (transform != null)
                 {
@@ -233,7 +237,7 @@ namespace RevitClasher
         /// <returns></returns>
         internal static List<ElementFilter> SelectionA()
         {
-            //TODO: change to UI selection
+            
             var categories = new List<ElementFilter>() {
                 new ElementCategoryFilter(BuiltInCategory.OST_DuctCurves),
                 new ElementCategoryFilter(BuiltInCategory.OST_PipeCurves),
@@ -249,7 +253,7 @@ namespace RevitClasher
         /// </summary>
         /// <returns></returns>
         internal static List<ElementFilter> SelectionB()
-        {//TODO: change to UI selection
+        {
             var categories = new List<ElementFilter>() {
                 new ElementCategoryFilter(BuiltInCategory.OST_StructuralColumns),
                 new ElementCategoryFilter(BuiltInCategory.OST_StructuralFraming),
@@ -261,29 +265,7 @@ namespace RevitClasher
         }
     }
 
-    /// <summary>
-    /// Future implementation, groud by clashing elements
-    /// </summary>
-    public class ClashItems
-    {
-        //public static RevitElement ElementA { get; set; }
-
-        //public static RevitElement ElementB { get; set; }
-
-        public string Name
-        {
-            get { return "Group " + ElementA.Name + "-" + ElementB.Name; }
-        }
-
-        public Element ElementA { get; internal set; }
-
-        public Element ElementB { get; internal set; }
-        public string ToString()
-        {
-            return Name;
-        }
-
-    }
+   
 
     class RevitTools
     {
@@ -310,7 +292,7 @@ namespace RevitClasher
                 #if REVIT2020 || REVIT2019
                 OverrideElemtColor.Graphics20192020(doc, ref ogsA, 255, 0, 0);
                 #else
-                    OverrideElemtColor.Graphics20172018(doc, ref ogsA, 255, 0, 0);
+                    OverrideElementColor.Graphics20172018(doc, ref ogsA, 255, 0, 0);
                 #endif
                 activeView.SetElementOverrides(item.Id, ogsA);
             }
@@ -324,7 +306,7 @@ namespace RevitClasher
                 #if REVIT2020 || REVIT2019
                 OverrideElemtColor.Graphics20192020(doc, ref ogsB, 0, 0, 255);
                 #else
-                OverrideElemtColor.Graphics20172018(doc, ref ogsA, 0, 0, 255);
+                OverrideElementColor.Graphics20172018(doc, ref ogsA, 0, 0, 255);
                 #endif
 
                 activeView.SetElementOverrides(item.Id, ogsA);

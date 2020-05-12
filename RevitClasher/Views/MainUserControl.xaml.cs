@@ -3,6 +3,7 @@ using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
 using Newtonsoft.Json;
 using RevitClasher.Handlers;
+using RevitClasher.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -32,7 +33,7 @@ namespace RevitClasher
     {
 
         private ExternalEvent m_ExEvent;
-        private ExternalEventClashDetection m_Handler;
+        private ClashDetectionHandler m_Handler;
         public static bool _wasExecuted;
         public static MainUserControl thisForm;
         public static ObservableCollection<ClashItems> elementsClashingB { get; set; }
@@ -50,7 +51,7 @@ namespace RevitClasher
         /// <param name="externalCleanEvent">External event for cleaning view process</param>
         public MainUserControl(
             ExternalEvent exEvent,
-            ExternalEventClashDetection handler,
+            ClashDetectionHandler handler,
             ExternalEvent externalCleanEvent
         ){
             
