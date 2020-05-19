@@ -23,7 +23,7 @@ Clash Detection is an open-source project. You can make suggestions or track and
 
 ## License ##
 
-[The MIT License (MIT)](https://github.com/ENGworks-DEV/RenumberParts/blob/master/LICENSE)
+[The MIT License (MIT)](https://github.com/ENGworks-DEV/ClashDetection/blob/master/License)
 
 Copyright (c) 2020 Engworks
 
