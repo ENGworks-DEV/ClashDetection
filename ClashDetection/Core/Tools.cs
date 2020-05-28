@@ -1,7 +1,7 @@
 ﻿using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using RevitClasher.Model;
+using ClashDetection.Model;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 
-namespace RevitClasher
+namespace ClashDetection
 {
     class Clash
 
@@ -372,7 +372,7 @@ namespace RevitClasher
                 {
                     //If element is in a link, add to list of selected elements
 
-                    if (clashItems.ElementB.Document != Doc)
+                    if (clashItems.ElementB.Document.PathName != Doc.PathName)
                     {
                         RevitTools.Uidoc.ShowElements(selectedIds);
                         
@@ -391,7 +391,8 @@ namespace RevitClasher
                     }
                     else
                     {
-                        selectedIds.Add(clashItems.ElementA.Id);
+                        selectedIds.Add(clashItems.ElementB.Id);
+
                         RevitTools.Doc.ActiveView.IsolateElementsTemporary(selectedIds);
                         RevitTools.Uidoc.ShowElements(selectedIds);
                         RevitTools.Uidoc.RefreshActiveView();
@@ -412,7 +413,7 @@ namespace RevitClasher
             ResetView();
             var listOfId = new List<ElementId>();
             listOfId.Add(elements.ElementA.Id);
-            if (elements.ElementB.Document == Doc)
+            if (elements.ElementB.Document.PathName == Doc.PathName)
             {
                 listOfId.Add(elements.ElementB.Id);
             }

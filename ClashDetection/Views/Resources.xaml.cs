@@ -2,7 +2,7 @@
 using System.Windows;
 
 
-namespace RevitClasher
+namespace ClashDetection
 {
     public partial class Resources : ResourceDictionary
     {

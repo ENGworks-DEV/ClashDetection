@@ -2,8 +2,8 @@
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
 using Newtonsoft.Json;
-using RevitClasher.Handlers;
-using RevitClasher.Model;
+using ClashDetection.Handlers;
+using ClashDetection.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -24,7 +24,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
-namespace RevitClasher
+namespace ClashDetection
 {
     /// <summary>
     /// Interaction logic for MainUserControl.xaml
@@ -131,13 +131,13 @@ namespace RevitClasher
             SelectionBList.ItemsSource = SelectionB;
 
             //Presetting everything from a previous run
-            foreach (var item in RevitClasher.Properties.Settings.Default.SelectionB)
+            foreach (var item in ClashDetection.Properties.Settings.Default.SelectionB)
             {
                 int i = int.Parse(item);
                 CheckBox chbox = SelectionBList.Items[i] as CheckBox;
                 chbox.IsChecked = true;
             }
-            foreach (var item in RevitClasher.Properties.Settings.Default.SelectionA)
+            foreach (var item in ClashDetection.Properties.Settings.Default.SelectionA)
             {
                 int i = int.Parse(item);
                 CheckBox chbox = SelectionAList.Items[i] as CheckBox;
@@ -182,6 +182,7 @@ namespace RevitClasher
         private void Run_Click(object sender, RoutedEventArgs e)
         {
             this.Results.Items.Clear();
+            SaveConfiguration();
             RevitTools.CropBox = RevitTools.GetCropBox();
             StringCollection selectionACollection = Properties.Settings.Default.SelectionA;
             StringCollection selectionBCollection = Properties.Settings.Default.SelectionB;

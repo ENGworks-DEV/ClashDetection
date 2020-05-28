@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RevitClasher
+namespace ClashDetection
 {
     public class CommonAssemblyInfo
     {

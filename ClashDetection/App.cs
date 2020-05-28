@@ -9,10 +9,10 @@ using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using System.Resources;
-using RevitClasher.Handlers;
+using ClashDetection.Handlers;
 #endregion
 
-namespace RevitClasher
+namespace ClashDetection
 {
     class App : IExternalApplication
     {
@@ -31,7 +31,7 @@ namespace RevitClasher
             //Button
             PushButton pushButton = m_projectPanel.AddItem(new PushButtonData(
                 "ClashDetection", "Clash Detection", ExecutingAssemblyPath,
-                "RevitClasher.Main")) as PushButton;
+                "ClashDetection.Main")) as PushButton;
 
             //Add Help ToolTip 
             pushButton.ToolTip = "Clash Detection";
@@ -42,7 +42,7 @@ namespace RevitClasher
 
             // Set the large image shown on button.
             pushButton.LargeImage = PngImageSource(
-                "RevitClasher.Resources.ClasherIcon.png");
+                "ClashDetection.Resources.ClasherIcon.png");
 
             // Get the location of the solution DLL
             string path = System.IO.Path.GetDirectoryName(
@@ -58,7 +58,7 @@ namespace RevitClasher
 
             ContextualHelp contextHelp = new ContextualHelp(
                 ContextualHelpType.Url,
-                "https://engworks.com/renumber-parts/");
+                "https://engworks.com/ClashDetection/");
 
             // Assign contextual help to pushbutton
             pushButton.SetContextualHelp(contextHelp);

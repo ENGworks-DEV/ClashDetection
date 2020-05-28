@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RevitClasher.Handlers
+namespace ClashDetection.Handlers
 {
     /// <summary>
     /// Handler class destinated to provide an event handler for actions and modifications of the active document

@@ -1,6 +1,6 @@
 ﻿using Autodesk.Revit.DB;
 
-namespace RevitClasher
+namespace ClashDetection
 {
     public class RevitElement
     {

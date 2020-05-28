@@ -7,8 +7,8 @@
     <ProjectGuid>{0614BF9F-6BCD-476B-B0A3-180D556F7530}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RevitClasher</RootNamespace>
-    <AssemblyName>RevitClasher</AssemblyName>
+    <RootNamespace>ClashDetection</RootNamespace>
+    <AssemblyName>ClashDetection</AssemblyName>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -31,7 +31,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <StartProgram>$(ProgramW6432)\Autodesk\Revit 2018\Revit.exe</StartProgram>
-    <DocumentationFile>bin\2018\RevitClasher.xml</DocumentationFile>
+    <DocumentationFile>bin\2018\ClashDetection.xml</DocumentationFile>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == '2019|AnyCPU'">
@@ -160,7 +160,7 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="RevitClasher.addin" />
+    <None Include="ClashDetection.addin" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\MainUserControl.xaml">
@@ -175,7 +175,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\ClasherIcon.png" />
     <Content Include="Resources\EngLogo-01.png" />
-    <Resource Include="Resources\Icon.png" />
+    <EmbeddedResource Include="Resources\Icon.png" />
     <EmbeddedResource Include="Resources\RevitClasherLogo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -186,18 +186,9 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if $(ConfigurationName) == 2017 if exist "%25appdata%25\Autodesk\Revit\Addins\2017" copy "$(ProjectDir)*.addin" "%25appdata%25\Autodesk\Revit\Addins\2017"
-if $(ConfigurationName) == 2017 if exist "%25appdata%25\Autodesk\Revit\Addins\2017" mkdir "%25appdata%25\Autodesk\Revit\Addins\2017\RevitClasher\"
-if $(ConfigurationName) == 2017  xcopy /Y "$(ProjectDir)$(OutputPath)*.dll" "%25appdata%25\Autodesk\Revit\Addins\2017\RevitClasher\"
-if $(ConfigurationName) == 2018 if exist "%25appdata%25\Autodesk\Revit\Addins\201" copy "$(ProjectDir)*.addin" "%25appdata%25\Autodesk\Revit\Addins\2018"
-if $(ConfigurationName) == 2018 if exist "%25appdata%25\Autodesk\Revit\Addins\2018" mkdir "%25appdata%25\Autodesk\Revit\Addins\2018\RevitClasher\"
-if $(ConfigurationName) == 2018  xcopy /Y "$(ProjectDir)$(OutputPath)*.dll" "%25appdata%25\Autodesk\Revit\Addins\2018\RevitClasher\"
-if $(ConfigurationName) == 2019 if exist "%25appdata%25\Autodesk\Revit\Addins\2019" copy "$(ProjectDir)*.addin" "%25appdata%25\Autodesk\Revit\Addins\2019"
-if $(ConfigurationName) == 2019 if exist "%25appdata%25\Autodesk\Revit\Addins\2019" mkdir "%25appdata%25\Autodesk\Revit\Addins\2019\RevitClasher\"
-if $(ConfigurationName) == 2019  xcopy /Y "$(ProjectDir)$(OutputPath)*.dll" "%25appdata%25\Autodesk\Revit\Addins\2019\RevitClasher\"
-if $(ConfigurationName) == 2020 if exist "%25appdata%25\Autodesk\Revit\Addins\2020" copy "$(ProjectDir)*.addin" "%25appdata%25\Autodesk\Revit\Addins\2020"
-if $(ConfigurationName) == 2020 if exist "%25appdata%25\Autodesk\Revit\Addins\2020" mkdir "%25appdata%25\Autodesk\Revit\Addins\2020\RevitClasher\"
-if $(ConfigurationName) == 2020  xcopy /Y "$(ProjectDir)$(OutputPath)*.dll" "%25appdata%25\Autodesk\Revit\Addins\2020\RevitClasher\"
+    <PostBuildEvent>if exist "%25appdata%25\Autodesk\Revit\Addins\$(ConfigurationName)" copy "$(ProjectDir)*.addin" "%25appdata%25\Autodesk\Revit\Addins\$(ConfigurationName)"
+if exist "%25appdata%25\Autodesk\Revit\Addins\$(ConfigurationName)" mkdir "%25appdata%25\Autodesk\Revit\Addins\$(ConfigurationName)\ClashDetection\"
+if exist "%25appdata%25\Autodesk\Revit\Addins\$(ConfigurationName)" xcopy /Y "$(ProjectDir)$(OutputPath)*.*" "%25appdata%25\Autodesk\Revit\Addins\$(ConfigurationName)\ClashDetection\"
 if not $(ConfigurationName) == Debug if exist "$(ProjectDir)\Engworks.pfx" "C:\Program Files (x86)\Windows Kits\10\App Certification Kit\signtool.exe" sign /f  "$(ProjectDir)\Engworks.pfx" /p Engw123. /t http://timestamp.verisign.com/scripts/timstamp.dll "$(ProjectDir)$(OutputPath)*.dll"
 if not $(ConfigurationName) == Debug copy "$(ProjectDir)*.addin" "$(ProjectDir)$(OutputPath)"
 if not $(ConfigurationName) == Debug (powershell Compress-Archive -Path '$(ProjectDir)$(OutputPath)*.dll', '$(ProjectDir)$(OutputPath)*.addin' -DestinationPath "$(ProjectDir)$(OutputPath)$(ProjectName)" -Force)

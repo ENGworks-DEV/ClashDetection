@@ -15,7 +15,7 @@ using Color = System.Drawing.Color;
 using System.Timers;
 
 
-namespace RevitClasher
+namespace ClashDetection
 {
     public static class OverrideElementColor
     {

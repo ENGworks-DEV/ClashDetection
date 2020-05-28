@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29025.244
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RevitClasher", "RevitClasher\RevitClasher.csproj", "{0614BF9F-6BCD-476B-B0A3-180D556F7530}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashDetection", "ClashDetection\ClashDetection.csproj", "{0614BF9F-6BCD-476B-B0A3-180D556F7530}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

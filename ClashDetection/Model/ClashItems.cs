@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RevitClasher.Model
+namespace ClashDetection.Model
 {
     /// <summary>
     /// Future implementation, group by clashing elements
