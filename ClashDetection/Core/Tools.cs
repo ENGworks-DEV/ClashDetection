@@ -104,7 +104,10 @@ namespace ClashDetection
                     {
                         if (!ClashingElementsA.Contains(elementA))
                         {
-                            if (getClashWithSolid(doc, geomTranslated, elementA))
+                            if (getClashWithSolid(doc, geomTranslated, elementA) 
+                                && elementA.Id != elementB.Id
+                                && !ClashItemsList.Any(x => (x.ElementA.Id == elementB.Id && x.ElementB.Id == elementA.Id))
+                                )
                             {
                                 ClashItems clashItems = new ClashItems
                                 {
