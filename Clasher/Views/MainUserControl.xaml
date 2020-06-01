@@ -98,7 +98,7 @@
                        RenderTransformOrigin="0.615,1.955"/>
             <Button x:Name="Run"
                        Style="{DynamicResource MainButtonStyle}"
-                       Content="Execute" 
+                       Content="EXECUTE" 
                        HorizontalAlignment="Left" 
                        Height="36" 
                        Margin="10,668,0,0" 
