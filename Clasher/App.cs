@@ -9,10 +9,10 @@ using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using System.Resources;
-using RevitClasher.Handlers;
+using Clasher.Handlers;
 #endregion
 
-namespace RevitClasher
+namespace Clasher
 {
     class App : IExternalApplication
     {
@@ -26,12 +26,12 @@ namespace RevitClasher
 
             // Create a ribbon panel
             RibbonPanel m_projectPanel = application.CreateRibbonPanel(
-                "ClashDetection");
+                "Clasher");
             
             //Button
             PushButton pushButton = m_projectPanel.AddItem(new PushButtonData(
-                "ClashDetection", "Clash Detection", ExecutingAssemblyPath,
-                "RevitClasher.Main")) as PushButton;
+                "Clasher", "Clasher", ExecutingAssemblyPath,
+                "Clasher.Main")) as PushButton;
 
             //Add Help ToolTip 
             pushButton.ToolTip = "Clash Detection";
@@ -42,7 +42,7 @@ namespace RevitClasher
 
             // Set the large image shown on button.
             pushButton.LargeImage = PngImageSource(
-                "RevitClasher.Resources.ClasherIcon.png");
+                "Clasher.Resources.ClasherIcon.png");
 
             // Get the location of the solution DLL
             string path = System.IO.Path.GetDirectoryName(
@@ -58,7 +58,7 @@ namespace RevitClasher
 
             ContextualHelp contextHelp = new ContextualHelp(
                 ContextualHelpType.Url,
-                "https://engworks.com/renumber-parts/");
+                "https://engworks.com/Clasher/");
 
             // Assign contextual help to pushbutton
             pushButton.SetContextualHelp(contextHelp);
@@ -101,7 +101,7 @@ namespace RevitClasher
             if (m_MyForm == null)
             {
                 // A new handler to handle request posting by the dialog
-                ExternalEventClashDetection handler = new ExternalEventClashDetection();
+                ClasherHandler handler = new ClasherHandler();
 
                 // External Event for the dialog to use (to post requests)
                 ExternalEvent exEvent = ExternalEvent.Create(handler);

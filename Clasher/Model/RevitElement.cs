@@ -1,6 +1,6 @@
 ﻿using Autodesk.Revit.DB;
 
-namespace RevitClasher
+namespace Clasher
 {
     public class RevitElement
     {

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 
-namespace RevitClasher
+namespace Clasher
 {
-    public class ExternalEventClashDetection : IExternalEventHandler
+    public class ClasherHandler : IExternalEventHandler
     {
         public void Execute(UIApplication app)
         {

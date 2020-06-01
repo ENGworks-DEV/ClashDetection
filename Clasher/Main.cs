@@ -10,12 +10,12 @@ using Autodesk.Revit.ApplicationServices;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace RevitClasher
-{
+namespace Clasher
+{ 
     [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
     public class Main : IExternalCommand
     {
-        static AddInId appId = new AddInId(new Guid("64E3DE6F-4F9F-4942-9EAC-02B2D54F6222"));
+        static AddInId appId = new AddInId(new Guid("55E3DE6F-4F9F-4942-9EAC-02B2D54F6222"));
 
         public virtual Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {

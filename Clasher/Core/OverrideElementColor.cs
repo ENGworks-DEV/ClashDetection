@@ -15,9 +15,9 @@ using Color = System.Drawing.Color;
 using System.Timers;
 
 
-namespace RevitClasher
+namespace Clasher
 {
-    public static class OverrideElemtColor
+    public static class OverrideElementColor
     {
 
         public static void Graphics20192020(Document doc, ref OverrideGraphicSettings overrideGraphicSettings, byte r, byte g, byte b)

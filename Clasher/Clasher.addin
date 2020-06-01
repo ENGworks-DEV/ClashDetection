@@ -2,10 +2,10 @@
 <RevitAddIns>
 
   <AddIn Type="Application">
-    <Name>RevitClasher</Name>
-    <Assembly>RevitClasher\RevitClasher.dll</Assembly>
-    <FullClassName>RevitClasher.App</FullClassName>
-    <ClientId>64E3DE6F-4F9F-4942-9EAC-02B2D54F6222</ClientId>
+    <Name>Clasher</Name>
+    <Assembly>Clasher\Clasher.dll</Assembly>
+    <FullClassName>Clasher.App</FullClassName>
+    <ClientId>1D2AD977-B574-4B9A-A458-45E6E358FE5A</ClientId>
     <VendorId>ENG</VendorId>
     <VendorDescription>ENGworks, http://www.engworks.com</VendorDescription>
   </AddIn>

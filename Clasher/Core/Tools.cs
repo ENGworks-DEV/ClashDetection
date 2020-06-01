@@ -1,6 +1,7 @@
 ﻿using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using Clasher.Model;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 
-namespace RevitClasher
+namespace Clasher
 {
     class Clash
 
@@ -22,8 +23,12 @@ namespace RevitClasher
             {
 
                 var clashing = Clash.clashingElements(RevitTools.Doc, RevitTools.App);
-                foreach (var item in clashing)
+                string format = new string('0', clashing.Count.ToString().Length);
+                for (int i = 0; i < clashing.Count; i++)
                 {
+                    
+                    var item = clashing[i];
+                    item.Number =(i).ToString(format); ;
                     MainUserControl.elementsClashingA.Add(item);
                 }
 
@@ -49,8 +54,7 @@ namespace RevitClasher
         }
         public static List<ClashItems> clashingElements(Document doc, Application app, Document link = null)
         {
-            //TODO : Create a separate addin to save configuration
-
+ 
             var linkedElements = new List<Element>();
             var localElements = new List<Element>();
             var ClashingElementsA = new List<Element>();
@@ -77,7 +81,7 @@ namespace RevitClasher
                 GeometryElement geom = elementB.get_Geometry(opt);
                 GeometryElement geomTranslated = geom;
                 // Get bounding box from transformed geometry
-                // By default use element geoemtry to extract bbox
+                // By default use element geometry to extract bbox
                 var bbox = geom.GetBoundingBox();
                 if (transform != null)
                 {
@@ -100,7 +104,10 @@ namespace RevitClasher
                     {
                         if (!ClashingElementsA.Contains(elementA))
                         {
-                            if (getClashWithSolid(doc, geomTranslated, elementA))
+                            if (getClashWithSolid(doc, geomTranslated, elementA) 
+                                && elementA.Id != elementB.Id
+                                && !ClashItemsList.Any(x => (x.ElementA.Id == elementB.Id && x.ElementB.Id == elementA.Id))
+                                )
                             {
                                 ClashItems clashItems = new ClashItems
                                 {
@@ -189,9 +196,9 @@ namespace RevitClasher
                     Solid solidObject = geomObj as Solid;
                     ElementIntersectsSolidFilter elementIntersectsSolidFilter = new ElementIntersectsSolidFilter(solidObject);
                     FilteredElementCollector collector = new FilteredElementCollector(doc, elementsList).WherePasses(elementIntersectsSolidFilter);
-                    
+
                     // If collector count is zero, this means that Solid intersection can't be possible with the given element (ie: Fabrication Parts).
-                    if(collector.Count() == 0)
+                    if (collector.Count() == 0 && !fabparts.Contains(element.Category.Id))
                     {
                         BoundingBoxXYZ bbox = geometryElement.GetBoundingBox();
                         Outline outline = new Outline(bbox.Min, bbox.Max);
@@ -233,7 +240,7 @@ namespace RevitClasher
         /// <returns></returns>
         internal static List<ElementFilter> SelectionA()
         {
-            //TODO: change to UI selection
+            
             var categories = new List<ElementFilter>() {
                 new ElementCategoryFilter(BuiltInCategory.OST_DuctCurves),
                 new ElementCategoryFilter(BuiltInCategory.OST_PipeCurves),
@@ -249,7 +256,7 @@ namespace RevitClasher
         /// </summary>
         /// <returns></returns>
         internal static List<ElementFilter> SelectionB()
-        {//TODO: change to UI selection
+        {
             var categories = new List<ElementFilter>() {
                 new ElementCategoryFilter(BuiltInCategory.OST_StructuralColumns),
                 new ElementCategoryFilter(BuiltInCategory.OST_StructuralFraming),
@@ -259,31 +266,18 @@ namespace RevitClasher
 
             return categories;
         }
+
+        public static List<ElementId> fabparts { 
+            get {
+                var filter = new List<ElementId>();
+                filter.Add(new ElementId(BuiltInCategory.OST_FabricationDuctwork));
+                filter.Add(new ElementId(BuiltInCategory.OST_FabricationPipework));
+                return filter;
+            } 
+        }
     }
 
-    /// <summary>
-    /// Future implementation, groud by clashing elements
-    /// </summary>
-    public class ClashItems
-    {
-        //public static RevitElement ElementA { get; set; }
-
-        //public static RevitElement ElementB { get; set; }
-
-        public string Name
-        {
-            get { return "Group " + ElementA.Name + "-" + ElementB.Name; }
-        }
-
-        public Element ElementA { get; internal set; }
-
-        public Element ElementB { get; internal set; }
-        public string ToString()
-        {
-            return Name;
-        }
-
-    }
+   
 
     class RevitTools
     {
@@ -291,6 +285,8 @@ namespace RevitClasher
         public static Document Doc { get; set; }
         public static Application App { get; set; }
         public static UIDocument Uidoc { get; internal set; }
+
+        public static BoundingBoxXYZ CropBox { get; set; }
 
         /// <summary>
         /// Clear all overrides in view and just overrides selection to red
@@ -308,9 +304,9 @@ namespace RevitClasher
             foreach (var item in ClashingElements)
             {
                 #if REVIT2020 || REVIT2019
-                OverrideElemtColor.Graphics20192020(doc, ref ogsA, 255, 0, 0);
+                OverrideElementColor.Graphics20192020(doc, ref ogsA, 255, 0, 0);
                 #else
-                    OverrideElemtColor.Graphics20172018(doc, ref ogsA, 255, 0, 0);
+                    OverrideElementColor.Graphics20172018(doc, ref ogsA, 255, 0, 0);
                 #endif
                 activeView.SetElementOverrides(item.Id, ogsA);
             }
@@ -322,9 +318,9 @@ namespace RevitClasher
             {
 
                 #if REVIT2020 || REVIT2019
-                OverrideElemtColor.Graphics20192020(doc, ref ogsB, 0, 0, 255);
+                OverrideElementColor.Graphics20192020(doc, ref ogsB, 0, 0, 255);
                 #else
-                OverrideElemtColor.Graphics20172018(doc, ref ogsA, 0, 0, 255);
+                OverrideElementColor.Graphics20172018(doc, ref ogsA, 0, 0, 255);
                 #endif
 
                 activeView.SetElementOverrides(item.Id, ogsA);
@@ -367,37 +363,88 @@ namespace RevitClasher
             }
         }
 
+        public static void IsolateSelectionTemporary(ClashItems clashItems)
+        {
 
+            CreateBox(clashItems);
+            ICollection<ElementId> selectedIds = new List<ElementId>();
+            selectedIds.Add(clashItems.ElementA.Id);
+            if (selectedIds.Count > 0)
+            {
+                try
+                {
+                    //If element is in a link, add to list of selected elements
+
+                    if (clashItems.ElementB.Document.PathName != Doc.PathName)
+                    {
+                        RevitTools.Uidoc.ShowElements(selectedIds);
+                        
+                        var linkInstance = new FilteredElementCollector(Doc)
+                            .OfClass(typeof(RevitLinkInstance))
+                            .ToElements()
+                            .Where(x => x.Name.Contains(clashItems.ElementB.Document.Title)).FirstOrDefault();
+                        if (linkInstance != null)
+                        {
+                            selectedIds.Add(linkInstance.Id);
+                        }
+                        RevitTools.Doc.ActiveView.IsolateElementsTemporary(selectedIds);
+                        RevitTools.Uidoc.RefreshActiveView();
+
+
+                    }
+                    else
+                    {
+                        selectedIds.Add(clashItems.ElementB.Id);
+
+                        RevitTools.Doc.ActiveView.IsolateElementsTemporary(selectedIds);
+                        RevitTools.Uidoc.ShowElements(selectedIds);
+                        RevitTools.Uidoc.RefreshActiveView();
+                    }
+
+
+                }
+                catch (Exception vEx)
+                {
+                }
+            }
+        }
 
         public static void Focus(ClashItems elements)
         {
-            if (MainUserControl._CropBox)
-            {
-                CreateBox(elements);
-            }
+
             View activeView = RevitTools.Doc.ActiveView;
             ResetView();
             var listOfId = new List<ElementId>();
             listOfId.Add(elements.ElementA.Id);
-            listOfId.Add(elements.ElementB.Id);
+            if (elements.ElementB.Document.PathName == Doc.PathName)
+            {
+                listOfId.Add(elements.ElementB.Id);
+            }
+
+
             RevitTools.Uidoc.Selection.SetElementIds(listOfId);
             RevitTools.Uidoc.ShowElements(listOfId);
         }
 
         public static void CreateBox(ClashItems elements)
         {
-            View activeView = (View3D)RevitTools.Doc.ActiveView;
-            if (MainUserControl._CropBox)
-            {
+            View3D activeView = (View3D)RevitTools.Doc.ActiveView;
 
-                BoundingBoxXYZ boundingBoxXYZ = elements.ElementA.get_BoundingBox(activeView);
-                activeView.CropBox = boundingBoxXYZ;
 
-            }
-            else
-            {
-                activeView.CropBox = null;
-            }
+                BoundingBoxXYZ A = elements.ElementA.get_BoundingBox(activeView);
+                BoundingBoxXYZ B = elements.ElementB.get_BoundingBox(activeView);
+                var XMax = Math.Max(A.Max.X, B.Max.X);
+                var YMax = Math.Max(A.Max.Y, B.Max.Y);
+                var ZMax = Math.Max(A.Max.Z, B.Max.Z);
+
+                var XMin = Math.Min(A.Min.X, B.Min.X);
+                var YMin = Math.Min(A.Min.Y, B.Min.Y);
+                var ZMin = Math.Min(A.Min.Z, B.Min.Z);
+
+                BoundingBoxXYZ bbx = new BoundingBoxXYZ() { Max = new XYZ(XMax, YMax, ZMax), Min = new XYZ(XMin, YMin, ZMin) };
+
+                activeView.SetSectionBox(bbx);
+
 
         }
 
@@ -420,7 +467,17 @@ namespace RevitClasher
                 TemporaryViewMode tempView = TemporaryViewMode.TemporaryHideIsolate;
                 activeView.DisableTemporaryViewMode(tempView);
             }
+            if (CropBox != null)
+            {
+                ((View3D)activeView).SetSectionBox(CropBox);
+            }
 
+
+        }
+
+        internal static BoundingBoxXYZ GetCropBox()
+        {
+            return ((View3D)RevitTools.Doc.ActiveView).GetSectionBox();
         }
     }
 }

@@ -7,8 +7,8 @@
     <ProjectGuid>{0614BF9F-6BCD-476B-B0A3-180D556F7530}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RevitClasher</RootNamespace>
-    <AssemblyName>RevitClasher</AssemblyName>
+    <RootNamespace>Clasher</RootNamespace>
+    <AssemblyName>Clasher</AssemblyName>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -22,12 +22,17 @@
     <StartProgram>$(ProgramW6432)\Autodesk\Revit 2017\Revit.exe</StartProgram>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == '2018|AnyCPU' ">
-    <DebugType>none</DebugType>
-    <Optimize>true</Optimize>
-    <DefineConstants>REVIT2018;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG;REVIT2018;TRACE</DefineConstants>
     <OutputPath>bin\2018\</OutputPath>
     <StartAction>Program</StartAction>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
     <StartProgram>$(ProgramW6432)\Autodesk\Revit 2018\Revit.exe</StartProgram>
+    <DocumentationFile>bin\2018\Clasher.xml</DocumentationFile>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == '2019|AnyCPU'">
     <DebugType>none</DebugType>
@@ -112,12 +117,13 @@
   <ItemGroup>
     <Compile Include="App.cs" />
     <Compile Include="Handlers\CleanViewHandler.cs" />
-    <Compile Include="Model\Handler.cs" />
+    <Compile Include="Model\ClashItems.cs" />
+    <Compile Include="Handlers\ClashDetectionHandler.cs" />
     <Compile Include="Utils\CommonAssemblyInfo.cs" />
     <Compile Include="Views\MainUserControl.xaml.cs">
       <DependentUpon>MainUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Model\OverrideElemtColor.cs" />
+    <Compile Include="Core\OverrideElementColor.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -138,7 +144,7 @@
     <Compile Include="Views\StyleableWindow\WindowDragBehavior.cs" />
     <Compile Include="Views\StyleableWindow\WindowResizeBehavior.cs" />
     <Compile Include="Core\Tools.cs" />
-    <Compile Include="Model\Main.cs" />
+    <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -154,7 +160,7 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="RevitClasher.addin" />
+    <None Include="Clasher.addin" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\MainUserControl.xaml">
@@ -169,7 +175,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\ClasherIcon.png" />
     <Content Include="Resources\EngLogo-01.png" />
-    <Resource Include="Resources\Icon.png" />
+    <EmbeddedResource Include="Resources\Icon.png" />
     <EmbeddedResource Include="Resources\RevitClasherLogo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -180,14 +186,9 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if $(ConfigurationName) == 2017 if exist "$(AppData)\Autodesk\REVIT\Addins\2017" copy "$(ProjectDir)*.addin" "$(AppData)\Autodesk\REVIT\Addins\2017"
-if $(ConfigurationName) == 2017 if exist "$(AppData)\Autodesk\REVIT\Addins\2017" copy "$(ProjectDir)$(OutputPath)*.dll" "$(AppData)\Autodesk\REVIT\Addins\2017\RevitClasher"
-if $(ConfigurationName) == 2018 if exist "$(AppData)\Autodesk\REVIT\Addins\2018" copy "$(ProjectDir)*.addin" "$(AppData)\Autodesk\REVIT\Addins\2018"
-if $(ConfigurationName) == 2018 if exist "$(AppData)\Autodesk\REVIT\Addins\2018" copy "$(ProjectDir)$(OutputPath)*.dll" "$(AppData)\Autodesk\REVIT\Addins\2018\RevitClasher"
-if $(ConfigurationName) == 2019 if exist "$(AppData)\Autodesk\REVIT\Addins\2019" copy "$(ProjectDir)*.addin" "$(AppData)\Autodesk\REVIT\Addins\2019"
-if $(ConfigurationName) == 2019 if exist "$(AppData)\Autodesk\REVIT\Addins\2019" copy "$(ProjectDir)$(OutputPath)*.dll" "$(AppData)\Autodesk\REVIT\Addins\2019\RevitClasher"
-if $(ConfigurationName) == 2020 if exist "$(AppData)\Autodesk\REVIT\Addins\2020" copy "$(ProjectDir)*.addin" "$(AppData)\Autodesk\REVIT\Addins\2020"
-if $(ConfigurationName) == 2020 if exist "$(AppData)\Autodesk\REVIT\Addins\2020" copy "$(ProjectDir)$(OutputPath)*.dll" "$(AppData)\Autodesk\REVIT\Addins\2020\RevitClasher"
+    <PostBuildEvent>if exist "%25appdata%25\Autodesk\Revit\Addins\$(ConfigurationName)" copy "$(ProjectDir)*.addin" "%25appdata%25\Autodesk\Revit\Addins\$(ConfigurationName)"
+if exist "%25appdata%25\Autodesk\Revit\Addins\$(ConfigurationName)" mkdir "%25appdata%25\Autodesk\Revit\Addins\$(ConfigurationName)\Clasher\"
+if exist "%25appdata%25\Autodesk\Revit\Addins\$(ConfigurationName)" xcopy /Y "$(ProjectDir)$(OutputPath)*.*" "%25appdata%25\Autodesk\Revit\Addins\$(ConfigurationName)\Clasher\"
 if not $(ConfigurationName) == Debug if exist "$(ProjectDir)\Engworks.pfx" "C:\Program Files (x86)\Windows Kits\10\App Certification Kit\signtool.exe" sign /f  "$(ProjectDir)\Engworks.pfx" /p Engw123. /t http://timestamp.verisign.com/scripts/timstamp.dll "$(ProjectDir)$(OutputPath)*.dll"
 if not $(ConfigurationName) == Debug copy "$(ProjectDir)*.addin" "$(ProjectDir)$(OutputPath)"
 if not $(ConfigurationName) == Debug (powershell Compress-Archive -Path '$(ProjectDir)$(OutputPath)*.dll', '$(ProjectDir)$(OutputPath)*.addin' -DestinationPath "$(ProjectDir)$(OutputPath)$(ProjectName)" -Force)
