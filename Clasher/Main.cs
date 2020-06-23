@@ -35,6 +35,13 @@ namespace Clasher
                 TaskDialog.Show("Error", "It only works on a 3D view");
                 return Result.Failed;
             }
+
+            if (doc.PathName.ToString() == "" || doc.PathName.ToString().EndsWith("a"))
+            {
+                TaskDialog.Show("Error", "It doesn't work inside revit families");
+                return Result.Failed;
+            }
+
             var testView = doc.ActiveView as View3D;
            
             if (!testView.IsSectionBoxActive)

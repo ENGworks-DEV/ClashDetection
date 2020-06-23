@@ -303,7 +303,7 @@ namespace Clasher
 
             foreach (var item in ClashingElements)
             {
-                #if REVIT2020 || REVIT2019
+                #if REVIT2020 || REVIT2019 || REVIT2021
                 OverrideElementColor.Graphics20192020(doc, ref ogsA, 255, 0, 0);
                 #else
                     OverrideElementColor.Graphics20172018(doc, ref ogsA, 255, 0, 0);
@@ -317,7 +317,7 @@ namespace Clasher
             foreach (var item in ClashingElements)
             {
 
-                #if REVIT2020 || REVIT2019
+                #if REVIT2020 || REVIT2019 || REVIT2021
                 OverrideElementColor.Graphics20192020(doc, ref ogsB, 0, 0, 255);
                 #else
                 OverrideElementColor.Graphics20172018(doc, ref ogsA, 0, 0, 255);

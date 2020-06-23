@@ -22,7 +22,8 @@ namespace Clasher
 
         public static void Graphics20192020(Document doc, ref OverrideGraphicSettings overrideGraphicSettings, byte r, byte g, byte b)
         {
-            #if REVIT2020 || REVIT2019
+
+            #if REVIT2020 || REVIT2019 || REVIT2021
             var patternCollector = new FilteredElementCollector(doc);
             patternCollector.OfClass(typeof(FillPatternElement));
             FillPatternElement fpe = patternCollector.ToElements()
@@ -33,10 +34,12 @@ namespace Clasher
             overrideGraphicSettings.SetProjectionLineColor(new Autodesk.Revit.DB.Color(r, g, b));
             #else
             #endif
+
         }
 
         public static void Graphics20172018(Document doc, ref OverrideGraphicSettings overrideGraphicSettings, byte r, byte g, byte b)
         {
+
             #if REVIT2017 || REVIT2018
             var patternCollector = new FilteredElementCollector(doc);
             patternCollector.OfClass(typeof(FillPatternElement));
@@ -48,6 +51,7 @@ namespace Clasher
             overrideGraphicSettings.SetProjectionLineColor(new Autodesk.Revit.DB.Color(r, g, b));
             #else
             #endif
+
         }
     }
 }
