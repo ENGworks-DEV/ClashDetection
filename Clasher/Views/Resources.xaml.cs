@@ -2,8 +2,8 @@
 using System.Windows;
 
 
-namespace RevitClasher
-{
+namespace Clasher
+{ 
     public partial class Resources : ResourceDictionary
     {
       

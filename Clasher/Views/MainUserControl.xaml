@@ -1,16 +1,16 @@
-﻿<Window x:Class="RevitClasher.MainUserControl"
+﻿<Window x:Class="Clasher.MainUserControl"
                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
                 xmlns:sw="clr-namespace:WpfStyleableWindow.StyleableWindow"  
-                xmlns:local="clr-namespace:RevitClasher"
+                xmlns:local="clr-namespace:Clasher"
                 mc:Ignorable="d" 
                 d:DesignWidth="400" 
                 MinHeight="750" 
-                MinWidth="400" 
+                MinWidth="450" 
                 MaxHeight="750" 
-                MaxWidth="400"
+                MaxWidth="450"
                 ResizeMode="NoResize" 
                 WindowStartupLocation="CenterScreen"
                 Style="{DynamicResource CustomWindowStyle}" 
@@ -35,6 +35,9 @@
                     Background="Transparent" 
                     Height="727" 
                     VerticalAlignment="Top">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
             <!--Title Bar elements-->
             <Button Style="{DynamicResource CloseButtonStyle}" 
                     Name="TtitleButton" 
@@ -43,10 +46,11 @@
                     Click="Title_Link" 
                     Background="Transparent" 
                     VerticalAlignment="Top" 
+                    HorizontalContentAlignment="Left"
                     Height="28" 
                     FontSize="20" 
                     FontWeight="Bold" 
-                    Margin="21,11,256,0">CLASHER</Button>
+                    Margin="22,10,255,0">CLASHER</Button>
             <Button Style="{DynamicResource CloseButtonStyle}" 
                     Name="CloseButton" 
                     Foreground="Black" 
@@ -57,15 +61,17 @@
                     Height="20" 
                     FontSize="16" 
                     FontWeight="Bold" 
-                    Margin="328,13,29,0">X</Button>
+                    Margin="360,13,10,0" RenderTransformOrigin="1,0.65">X</Button>
             <Label Style="{DynamicResource Labels}"
                     Content="{Binding Path=ProjectVersion}" 
-                    Margin="26,39,0,0" 
+                    Foreground="LightGray"
+                    Margin="20,35,0,0" 
                     Height="15" 
                     VerticalAlignment="Top" 
-                    FontFamily="Roboto" 
+                    FontFamily="Roboto"
+                    FontSize="12"
                     HorizontalAlignment="Left" 
-                    Width="44" 
+                    Width="45" 
                     RenderTransformOrigin="0.776,0.792" />
 
             <!--Body elements-->
@@ -73,33 +79,31 @@
             <ListBox  Name="SelectionAList"
                       Style="{DynamicResource  ListBoxStyleTop}"
                       HorizontalAlignment="Left" 
-                      Height="95" 
-                      Margin="22,161,0,0"
+                      Height="120" 
+                      Margin="10,132,0,0"
                       VerticalAlignment="Top" 
-                      Width="144" SelectionChanged="SelectionAList_SelectionChanged">
+                      Width="182" SelectionChanged="SelectionAList_SelectionChanged">
             </ListBox>
             <ListBox  Name="SelectionBList"
                       Style="{DynamicResource  ListBoxStyleTop}"
                       HorizontalAlignment="Left" 
-                      Height="95" 
-                      Margin="200,161,0,0" 
-                      VerticalAlignment="Top"   
-                      Width="143">
-            </ListBox>
+                      Margin="220,131,0,476"  
+                      Height="120" 
+                      Width="190"/>
             <ComboBox  Name="ListOfLinks"
                        ItemContainerStyle="{DynamicResource ComboItemStyle}"
                        HorizontalAlignment="Left" 
-                       Height="27" Margin="200,87,0,0" 
-                       VerticalAlignment="Top" Width="143" 
+                       Height="27" Margin="220,58,0,0" 
+                       VerticalAlignment="Top" Width="190" 
                        RenderTransformOrigin="0.615,1.955"/>
             <Button x:Name="Run"
                        Style="{DynamicResource MainButtonStyle}"
-                       Content="Execute" 
+                       Content="EXECUTE" 
                        HorizontalAlignment="Left" 
-                       Height="37" 
-                       Margin="22,668,0,0" 
+                       Height="36" 
+                       Margin="10,668,0,0" 
                        VerticalAlignment="Top" 
-                       Width="321" 
+                       Width="400" 
                        Click="Run_Click"/>
             <ListBox  Name="Results"
                        Style="{DynamicResource  ListBoxStyle}"
@@ -107,15 +111,14 @@
                        DisplayMemberPath="Name" 
                        DataContext="{Binding elementsClashingA}" 
                        Height="330" 
-                       Margin="22,275,0,0" 
+                       Margin="10,275,0,0" 
                        SelectionChanged="OnSelectedA" 
                        VerticalAlignment="Top" 
-                       Width="321">
-            </ListBox>
+                       Width="400"/>
             <Label x:Name="TextBlockError"     
                        Content="No Elements Found" 
                        HorizontalAlignment="Left" 
-                       Height="30" Margin="111,421,0,0" 
+                       Height="30" Margin="138,422,0,0" 
                        VerticalAlignment="Top"
                        FontFamily="Roboto light" 
                        FontSize="14"
@@ -128,52 +131,52 @@
                        FontSize="14"
                        HorizontalAlignment="Left" 
                        Height="26" 
-                       Margin="26,90,0,0" 
+                       Margin="10,59,0,0" 
                        VerticalAlignment="Top"
                        HorizontalContentAlignment="Left" 
                        VerticalContentAlignment="Top"
-                       Width="140"/>
+                       Width="182"/>
             <Button x:Name="Reset" 
                        Style="{DynamicResource SecondaryButtonStyle}"
                        Content="Reset View" 
                        HorizontalAlignment="Left" 
                        Height="30" 
-                       Margin="22,624,0,0" 
+                       Margin="10,624,0,0" 
                        VerticalAlignment="Top" 
-                       Width="153" 
+                       Width="182" 
                        Click="Reset_Click" />
             <Button x:Name="Clean"
                        Style="{DynamicResource SecondaryButtonStyle}"
                        Content="Isolate Selection" 
                        HorizontalAlignment="Left" 
                        Height="30" 
-                       Margin="190,624,0,0" 
+                       Margin="220,624,0,0" 
                        VerticalAlignment="Top" 
-                       Width="153" 
+                       Width="190" 
                        Click="IsolateElements_click" />
 
             <TextBox HorizontalAlignment="Left" 
                        Style="{DynamicResource MainTextBox}"
                        Height="27"
-                       Margin="22,136,0,0" 
+                       Margin="10,107,0,0" 
                        TextWrapping="Wrap"
                        FontSize="14"
                        Name="SearchA" 
                        Tag="Categories A"
                        HorizontalContentAlignment="Left" 
                        VerticalAlignment="Top"
-                       Width="144" 
+                       Width="182" 
                        TextChanged="SearchA_TextChanged"/>
             <TextBox HorizontalAlignment="Left"
                         Style="{DynamicResource MainTextBox}"
                        Height="27" 
-                       Margin="200,136,0,0" 
+                       Margin="220,107,0,0" 
                        TextWrapping="Wrap" 
                        Name="SearchB" 
                      FontSize="14"
                        Tag="Categories B" 
                        VerticalAlignment="Top" 
-                       Width="143" 
+                       Width="190" 
                        TextChanged="SearchB_TextChanged"/>
         </Grid>
     </Border>
